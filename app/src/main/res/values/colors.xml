@@ -2,4 +2,31 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+<!--    &lt;!&ndash;        <color name="primary">#e9e4cb</color>    &ndash;&gt;-->
+<!--    <color name="primary">#1b1c1e</color>-->
+<!--    <color name="secondary">#283947</color>-->
+<!--    <color name="primary_varient">#1b1c1e</color>-->
+<!--    <color name="secondary_varient">#925a5a</color>-->
+<!--    <color name="background">#95afc5</color>-->
+<!--    <color name="background_varient">#d5d9d3</color>-->
+<!--    <color name="background_varient2">#db5851</color>-->
+<!--    <color name="sunny">#e9e4cb</color>-->
+
+
+    <color name="beige">#e9e4cb</color>
+    <color name="blue">#c6e0f7</color>
+
+    <color name="primary">#c6e0f7</color>
+    <color name="secondary">#e9e4cb</color>
+    <color name="primary_varient">#94c2e3</color>
+    <color name="secondary_varient">#c1bfa4</color>
+
+
+    <color name="dark_blue">#283947</color>
+    <color name="red">#925a5a</color>
+    <color name="redd">#db5851</color>
+
+
 </resources>
