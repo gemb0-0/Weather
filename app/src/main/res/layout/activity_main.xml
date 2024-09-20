@@ -5,6 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="100dp"
     tools:context=".view.MainActivity">
 
 <!--    &lt;!&ndash; Main Content Layout &ndash;&gt;-->
@@ -13,16 +14,14 @@
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content">-->
 
-<!--        &lt;!&ndash; Autocomplete Fragment &ndash;&gt;-->
-<!--        <fragment-->
-<!--            android:id="@+id/autocomplete_fragment"-->
-<!--            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/cardView" />-->
+<!--&lt;!&ndash;        &lt;!&ndash; Autocomplete Fragment &ndash;&gt;&ndash;&gt;-->
+<!--    <fragment-->
+<!--        android:id="@+id/autocomplete_fragment"-->
+<!--        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100dp"-->
+
+<!--         />-->
 
 <!--        &lt;!&ndash; Fragment Container for MapsFragment &ndash;&gt;-->
 <!--        <androidx.fragment.app.FragmentContainerView-->
@@ -45,11 +44,11 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
-    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/menu" />
+
 </androidx.drawerlayout.widget.DrawerLayout>
