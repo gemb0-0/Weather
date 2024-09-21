@@ -11,7 +11,9 @@ interface WeatherService {
     suspend fun getWeather(
         @Query("lon") lon: String,
         @Query("lat") lat: String,
-        @Query("appid") appid: String
+        @Query("appid") appid: String,
+        @Query("units") units: String ,
+        @Query("lang") lang: String
     ): Response<WeatherResponse>
 
 }
@@ -30,7 +32,7 @@ object RetrofitClient {
 
 
 
-class RemoteDataSource private constructor() {
+class RemoteDataSource private constructor():IRemoteDataSource {
     private val apiService: WeatherService = RetrofitClient.getInstance().create(WeatherService::class.java)
 
     companion object {
@@ -43,8 +45,11 @@ class RemoteDataSource private constructor() {
             }
         }
     }
-    suspend fun getWeather(lon: String, lat: String, appid: String): Response<WeatherResponse> {
-        return apiService.getWeather(lon, lat, appid)
+
+
+
+    override suspend fun getWeather(lon: String, lat: String, appid: String, units:String, lang:String): Response<WeatherResponse> {
+        return apiService.getWeather(lon, lat, appid,units,lang )
     }
 
 }

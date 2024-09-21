@@ -1,54 +1,53 @@
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="100dp"
     tools:context=".view.MainActivity">
 
-<!--    &lt;!&ndash; Main Content Layout &ndash;&gt;-->
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/main_content"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content">-->
-
-<!--&lt;!&ndash;        &lt;!&ndash; Autocomplete Fragment &ndash;&gt;&ndash;&gt;-->
-<!--    <fragment-->
-<!--        android:id="@+id/autocomplete_fragment"-->
-<!--        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="100dp"-->
-
-<!--         />-->
-
-<!--        &lt;!&ndash; Fragment Container for MapsFragment &ndash;&gt;-->
-<!--        <androidx.fragment.app.FragmentContainerView-->
-<!--            android:id="@+id/fragmentContainerView"-->
-<!--            android:name="com.example.weather.view.MapsFragment"-->
-<!--            android:layout_width="200dp"-->
-<!--            android:layout_height="250dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/cardView" />-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-    <!-- NavHostFragment for Navigation -->
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <!-- AppBarLayout with Toolbar for the AppBar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view"
-        android:layout_width="75dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/menu" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Drawer Layout with NavigationView -->
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:itemBackground="@drawable/nav_item_background"
+            app:itemRippleColor="#03A9F4"
+            app:menu="@menu/menu" />
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
