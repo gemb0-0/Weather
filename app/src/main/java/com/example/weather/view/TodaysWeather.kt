@@ -1,60 +1,130 @@
 package com.example.weather.view
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather.R
+import com.example.weather.databinding.FragmentTodaysWeatherBinding
+import com.example.weather.model.IRepository
+import com.example.weather.model.Repository
+import com.example.weather.viewmodel.TodaysWeatherViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TodaysWeather.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TodaysWeather : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    lateinit var binding: FragmentTodaysWeatherBinding
+    lateinit var viewModel: TodaysWeatherViewModel
+     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+     lateinit var adapter: HourlyWeatherAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+    //check the location permission and location enabled
+    override fun onStart() {
+        super.onStart()
+        if (CheckLocationPermission()) {
+            if (checkLocationEnabled()) {
+                //  getFreshLocation()
+                fusedLocationProviderClient =
+                    com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(
+                        requireContext()
+                    )
+                val repo:IRepository=Repository()
+                val factory = TodaysWeatherViewModel.TodaysWeatherViewModelFactory(fusedLocationProviderClient,repo)
+                viewModel = ViewModelProvider(this, factory).get(TodaysWeatherViewModel::class.java)
+                viewModel.getFreshLocation()
+                val myLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                binding.recylerview.layoutManager = myLayoutManager
+
+
+                viewModel.weather.observe(viewLifecycleOwner) {
+
+                }
+                viewModel.hourlyWeather.observe(viewLifecycleOwner) {
+                    adapter = HourlyWeatherAdapter(it)
+                    binding.recylerview.adapter = adapter
+                }
+
+
+            } else {
+                enableLocation()
+            }
+        } else {
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ), 505
+            )
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_todays_weather, container, false)
+    ): View {
+        binding = FragmentTodaysWeatherBinding.inflate(inflater, container, false)
+        return binding.root
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TodaysWeather.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TodaysWeather().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        viewModel = ViewModelProvider(this).get(TodaysWeatherViewModel::class.java)
+//        val factory = TodaysWeatherViewModelFactory(fusedLocationProviderClient)
+//        viewModel = ViewModelProvider(this, factory).get(TodaysWeatherViewModel::class.java)
+//        viewModel.getFreshLocation()
+
+
+
+
+
+        //viewModel.getweather()
     }
+
+
+    fun CheckLocationPermission(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+            //change the settings of the app
+        } else if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+            //change the settings of the app
+        }
+        return false
+
+    }
+
+    fun checkLocationEnabled(): Boolean {
+        val locationManager =
+            //  getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
+            requireContext().getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun enableLocation() {
+        Toast.makeText(
+            context,
+            getString(R.string.enable_the_location_to_use_the_app), Toast.LENGTH_LONG
+        ).show()
+        val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
+    }
+
 }
