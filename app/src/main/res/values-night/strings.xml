@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Language</string>
+    <string name="english_Lang">English</string>
+    <string name="arabic_lang">Arabic</string>
+    <string name="temp">Tempreature</string>
+    <string name="celisus">Celsius</string>
+    <string name="Kelvin">Kelvin</string>
+    <string name="windspeed">Wind Speed</string>
+</resources>
