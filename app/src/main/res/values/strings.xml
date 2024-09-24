@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">Weather</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="language">Language</string>
+    <string name="english_Lang">English</string>
+    <string name="arabic_lang">Arabic</string>
+    <string name="temp">Tempreature</string>
+    <string name="celisus">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="Kelvin">Kelvin</string>
+    <string name="windspeed">Wind Speed</string>
+    <string name="speed">Meter/Sec</string>
+    <string name="milesperh">Miles/Hour</string>
+    <string name="location">Location</string>
+    <string name="gps">GPS</string>
+    <string name="map">Map</string>
+    <string name="notifcation">Notifications</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="lang">en</string>
+    <string name="today">Today</string>
+    <string name="settings">settings</string>
+    <string name="profile">profile</string>
+    <string name="home">home</string>
+    <string name="no_saved_location">You haven\'t save any location</string>
+    <string name="enable_the_location_to_use_the_app">Enable the location to use the app</string>
+    <string name="apply">Apply</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="humidity">Humidity</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Wind">Wind</string>
+    <string name="Sunrise">Sunrise</string>
+    <string name="Sunset">Sunset</string>
+    <string name="Visibility">Visibility</string>
+    <string name="updatesettings">Update settings</string>
+    <string name="feels_like">"Feels Like "</string>
 </resources>
