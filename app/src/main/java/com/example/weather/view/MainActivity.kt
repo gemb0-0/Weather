@@ -1,8 +1,10 @@
 package com.example.weather.view
 
 import android.content.Context
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,30 +12,34 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.weather.R
+import com.example.weather.Utils.NetworkChangeReceiver
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
 import com.example.weather.viewmodel.MainActivityViewModel
 import com.example.weather.viewmodel.TodaysWeatherViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainActivityViewModel
+    private lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        //setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -41,6 +47,9 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val intentFilter: IntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        networkChangeReceiver = NetworkChangeReceiver(binding.root)
+        registerReceiver(networkChangeReceiver, intentFilter)
         val actionBar: ActionBar? = supportActionBar
         actionBar!!.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar.setDisplayHomeAsUpEnabled(true)
@@ -48,13 +57,20 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.navigationView, navController)
 
-       val sharedpref :SharedPreferences= getSharedPreferences("settings", MODE_PRIVATE)
+
+
+        val sharedpref :SharedPreferences= getSharedPreferences("settings", MODE_PRIVATE)
         val repo: IRepository = Repository()
         val factory = MainActivityViewModel.MainActivityViewModelFactory(
             repo,sharedpref
         )
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         viewModel.getSettings()
+        changeLocaleWhenStartingUp()
+
+    }
+
+    private fun changeLocaleWhenStartingUp() {
         lifecycleScope.launch {
             viewModel.Settings.collect() {
                 when (it[0]) {
@@ -63,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                         val config = resources.configuration
                         config.setLocale(Locale("en"))
                         resources.updateConfiguration(config, resources.displayMetrics)
+
                     }
 
                     "ar" -> {
@@ -74,6 +91,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(networkChangeReceiver)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+
+        }
+    }
+
+}
+
+
 
 //
 //        Geocoder(this@MainActivity).getFromLocation(
@@ -106,20 +144,3 @@ class MainActivity : AppCompatActivity() {
 //                Log.i(TAG, "An error occurred: $status")
 //            }
 //        })
-
-
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                binding.drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-
-        }
-    }
-
-}
