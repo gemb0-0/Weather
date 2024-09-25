@@ -13,13 +13,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="35dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="50dp"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_language"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
+                android:layout_height="100dp"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="35dp">
@@ -72,7 +73,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_temperature"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
+                android:layout_height="100dp"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="35dp">
@@ -133,7 +134,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_wind_speed"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
+                android:layout_height="100dp"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="35dp">
@@ -186,7 +187,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_location"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
+                android:layout_height="100dp"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="35dp">
@@ -239,7 +240,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView_notifications"
                 android:layout_width="match_parent"
-                android:layout_height="111dp"
+                android:layout_height="100dp"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@color/secondary"
                 app:cardCornerRadius="35dp">
