@@ -1,15 +1,20 @@
 package com.example.weather.view
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.weather.R
@@ -18,6 +23,8 @@ import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
 import com.example.weather.viewmodel.MainActivityViewModel
 import com.example.weather.viewmodel.TodaysWeatherViewModel
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -48,7 +55,25 @@ class MainActivity : AppCompatActivity() {
         )
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         viewModel.getSettings()
+        lifecycleScope.launch {
+            viewModel.Settings.collect() {
+                when (it[0]) {
+                    "en" -> {
+                        Locale.setDefault(Locale("en"))
+                        val config = resources.configuration
+                        config.setLocale(Locale("en"))
+                        resources.updateConfiguration(config, resources.displayMetrics)
+                    }
 
+                    "ar" -> {
+                        Locale.setDefault(Locale("ar"))
+                        val config = resources.configuration
+                        config.setLocale(Locale("ar"))
+                        resources.updateConfiguration(config, resources.displayMetrics)
+                    }
+                }
+            }
+        }
 
 //
 //        Geocoder(this@MainActivity).getFromLocation(

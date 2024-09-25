@@ -68,7 +68,7 @@ class Repository : IRepository {
     }
 
     override fun iniateSettings(sharedpref: SharedPreferences) {
-        localDataSource.iniateSettings(sharedpref)
+        localDataSource.getSettings(sharedpref)
     }
 
     override fun getSettings(sharedpref: SharedPreferences): Flow<MutableList<String?>> {

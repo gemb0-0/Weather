@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class TodaysWeatherViewModel(
@@ -102,7 +104,7 @@ class TodaysWeatherViewModel(
                     list["sunset"] = Utils.convertUnixToTime(data.sys.sunset!!.toLong(), data.timezone!!)
                     list["wind_speed"] =  convertWindSpeed(data.wind!!.speed)
                     list["humidity"] = data.main.humidity.toString() + "%"
-
+                    list["dayInfo"] =  formatDateFromTimestamp(data.dt!!.toLong())
                     _weather.value = ApiResponse.Success(list)
                 }
             } catch (e: Exception) {
@@ -155,6 +157,14 @@ class TodaysWeatherViewModel(
         }
 
 
+    }
+
+    fun formatDateFromTimestamp(timestamp: Long): String {
+        val date = Date(timestamp * 1000L)
+
+        val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
+
+        return dateFormat.format(date)
     }
 
     @SuppressLint("MissingPermission")

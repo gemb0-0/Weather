@@ -66,12 +66,14 @@ class TodaysWeather : Fragment() {
                                 binding.highLowTV.text = response.data.get("highLow")
                                 binding.descriptionTV.text = response.data.get("description")
                                 binding.dayInfoTV.text = response.data.get("dayInfo")
+                                binding.dayInfoTV.text = response.data.get("dayInfo")
                             }
 
                             is ApiResponse.Error -> {
                                 Log.i("TodaysWeather", "error: ${response.message}")
 
                             }
+
                         }
                     }
                 }
@@ -93,6 +95,8 @@ class TodaysWeather : Fragment() {
                                 Log.i("TodaysWeather", "error: ${response.message}")
 
                             }
+
+
                         }
                     }
                 }
