@@ -1,32 +1,21 @@
 package com.example.weather.viewmodel
 
+import WeatherResponse
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
-import android.os.Looper
-import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.weather.BuildConfig
 import com.example.weather.R
+import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.IRepository
-import com.example.weather.model.RemoteDataSource
-import com.example.weather.model.Repository
-import com.example.weather.model.WeatherResponse
+import com.example.weather.model.Utils
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TodaysWeatherViewModel(
@@ -41,50 +30,136 @@ class TodaysWeatherViewModel(
         fusedLocationProviderClient = fusedLocation
     }
 
-    private val _weather = MutableLiveData<WeatherResponse>()
-    val weather: LiveData<WeatherResponse> = _weather
+    private val _weather = MutableStateFlow<ApiResponse<WeatherResponse>>(ApiResponse.Loading)
+    val weather: StateFlow<ApiResponse<WeatherResponse>> = _weather
 
-    private val _hourlyWeather: MutableLiveData<List<Triple<String, String, String>>> = MutableLiveData()
-    val hourlyWeather: LiveData<List<Triple<String, String, String>>> = _hourlyWeather
+    private val _hourlyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> = MutableStateFlow(
+        ApiResponse.Loading)
+    val hourlyWeather: StateFlow<ApiResponse<List<Triple<String, String, String>>>> = _hourlyWeather
 
+    private val _weeklyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> = MutableStateFlow(ApiResponse.Loading)
+    val weeklyWeather:  StateFlow<ApiResponse<List<Triple<String, String, String>>>> = _hourlyWeather
 
-    fun getweather() {
-
-    }
 
     fun getLocalWeather(location: Location) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val res = _repo.getWeather(
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _weather.value = ApiResponse.Loading
+                 _repo.getWeather(
+                    location.longitude.toString(),
+                    location.latitude.toString(),
+                    BuildConfig.OPEN_WEATHER_API_KEY,
+                    "metric",
+                    R.string.lang.toString()
+                ).collect() { data ->
+                    _weather.value = ApiResponse.Success(data)
+                }
+            } catch (e: Exception) {
+                _weather.value = ApiResponse.Error(e.message ?: "Unknown error")
+
+            }
+
+            try {
+                val weekly = _repo.getWeeklyWeather(
+                    location.longitude.toString(),
+                    location.latitude.toString(),
+                    BuildConfig.OPEN_WEATHER_API_KEY,
+                    "metric",
+                    R.string.lang.toString()
+                ).collect() { data ->
+                    val listWeekly: MutableList<Triple<String, String, String>> = mutableListOf()
+                    for (i in data.list) {
+                        val weatherdesc = i.weather[0].description
+                        val temp = i.temp.min.toInt().toString() + "/" + i.temp.max.toInt() + "°C"
+                        listWeekly.add(Triple(weatherdesc, temp, i.weather[0].icon))
+                    }
+                    _weeklyWeather.value = ApiResponse.Success(listWeekly)
+                }
+            } catch (e: Exception) {
+                _weeklyWeather.value = ApiResponse.Error(e.message ?: "Unknown error")
+            }
+
+        try {
+            val res = _repo.getWeatherHourly(
                 location.longitude.toString(),
                 location.latitude.toString(),
                 BuildConfig.OPEN_WEATHER_API_KEY,
                 "metric",
-                "en"
-            )
-            val list: MutableList<Triple<String, String, String>> = mutableListOf()
-            for (i in res.list.subList(3, res.list.size)) {
-                val time = i.dt_txt.split(" ")[1].substringBeforeLast(":")
-                val temp = i.main.temp.toInt().toString() + "°C" //handle this
-                list.add(Triple(time, temp, i.weather[0].icon))
+                R.string.lang.toString()
+            ).collect() { data ->
+                val list: MutableList<Triple<String, String, String>> = mutableListOf()
+                for (i in data.list.subList(2, data.list.size)) {
+                    val time = i.dt_txt!!.split(" ")[1].substringBeforeLast(":")
+                    val temp = i.main.temp.toInt().toString() + "°C" //handle this
+                    list.add(Triple(time, temp, i.weather[0].icon))
+                }
+                _hourlyWeather.value = ApiResponse.Success(list)
             }
-            _hourlyWeather.postValue(list)
-            Log.i("HourlyWeather", _hourlyWeather.toString())
-
-
-            _weather.postValue(res)
+        } catch (e: Exception) {
+            _hourlyWeather.value = ApiResponse.Error(e.message ?: "Unknown error")
         }
+
+
+
+//
+//            val res = _repo.getWeatherHourly(
+//                location.longitude.toString(),
+//                location.latitude.toString(),
+//                BuildConfig.OPEN_WEATHER_API_KEY,
+//                "metric",
+//                R.string.lang.toString()
+//            )
+//            val list: MutableList<Triple<String, String, String>> = mutableListOf()
+//            for (i in res.list.subList(2, res.list.size)) {
+//                val time = i.dt_txt!!.split(" ")[1].substringBeforeLast(":")
+//                val temp = i.main.temp.toInt().toString() + "°C" //handle this
+//                list.add(Triple(time, temp, i.weather[0].icon))
+//            }
+//            _hourlyWeather.postValue(list)
+//            _weather.postValue(res)
+//
+//            Log.i("HourlyWeather", res.toString())
+//
+//
+//            val weekly = _repo.getWeeklyWeather(
+//                location.longitude.toString(),
+//                location.latitude.toString(),
+//                BuildConfig.OPEN_WEATHER_API_KEY,
+//                "metric",
+//                R.string.lang.toString()
+//            )
+//
+//            Log.i("WeeklyWeather", weekly.toString())
+//            val listWeekly: MutableList<Triple<String, String, String>> = mutableListOf()
+//
+//            for (i in weekly.list) {
+//                val weatherdesc = i.weather[0].description
+//                val temp = i.temp.min.toInt().toString() + "/" + i.temp.max.toInt() + "°C"
+//                listWeekly.add(Triple(weatherdesc, temp, i.weather[0].icon))
+//            }
+//
+//            _weeklyWeather.postValue(listWeekly)
+//
+//
+//
+
+        }
+
+
     }
 
     @SuppressLint("MissingPermission")
     fun getFreshLocation() {
         fusedLocation.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                Log.i("Locationnnnnnnnnn", "Lat: ${location.latitude}, Long: ${location.longitude}")
+               // Log.i("Locationnnnnnnnnn", "Lat: ${location.latitude}, Long: ${location.longitude}")
                 getLocalWeather(location)
             }
         }
 
     }
+
+
 
     class TodaysWeatherViewModelFactory(
         var fusedLocation: FusedLocationProviderClient, var _repo: IRepository
