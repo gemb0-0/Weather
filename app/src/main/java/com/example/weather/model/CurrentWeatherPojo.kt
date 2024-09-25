@@ -4,14 +4,10 @@ import java.io.Serializable
 
 data class WeatherResponse(
     val cod: String,
-    val message: Int,
+    val message: Any,
     val cnt: Int,
     val list: List<WeatherData>,
     val city: City,
-
-
-
-
     val weather: List<Weather>?,
     val base: String?,
     val main: Main?,
@@ -29,15 +25,25 @@ data class WeatherResponse(
 
 data class WeatherData(
     val dt: Long,
-    val main: Main,
+    val main: Main?,
     val weather: List<Weather>,
-    val clouds: Clouds,
-    val wind: Wind,
-    val visibility: Int,
-    val pop: Double,
-    val sys: Sys,
-    val dt_txt: String
+    val clouds: Any?,
+    val wind: Wind?,
+    val visibility: Int?,
+    val pop: Double?,
+    val sys: Sys?,
+    val dt_txt: String?,
+    val sunrise: Long?,
+    val sunset: Long?,
+    val temp: Temperature?,
+    val feels_like: FeelsLike?,
+    val pressure: Int?,
+    val humidity: Int?,
+    val speed: Double?,
+    val deg: Int?,
+    val gust: Double?,
 )
+
 
 data class Main(
     val temp: Double,
@@ -152,14 +158,12 @@ data class FeelsLike(
     val eve: Double,
     val morn: Double
 )
-
-
-
-
-
-
-
-
-
-
+data class Temperature(
+    val day: Double,
+    val min: Double,
+    val max: Double,
+    val night: Double,
+    val eve: Double,
+    val morn: Double
+)
 

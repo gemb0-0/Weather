@@ -10,7 +10,7 @@ interface IRepository {
     suspend fun getWeatherHourly(lon: String, lat: String, appid: String, units:String, lang:String): Flow<WeatherResponse>
     suspend fun getWeeklyWeather(lon: String, lat: String, appid: String, units:String, lang:String): Flow<ForcastResponse>
     suspend fun getWeather(lon: String, lat: String, appid: String, units:String, lang:String): Flow<WeatherResponse>
-    fun UpdateSettings(sharedpref: SharedPreferences, updatedSettings: MutableList<String>)
+    fun UpdateSettings(sharedpref: SharedPreferences, updatedSettings: MutableMap<String,String>)
     fun iniateSettings(sharedpref: SharedPreferences)
     fun getSettings(sharedpref: SharedPreferences): Flow<MutableList<String?>>
 

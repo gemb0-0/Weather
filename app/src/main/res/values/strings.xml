@@ -10,7 +10,7 @@
     <string name="fahrenheit">Fahrenheit</string>
     <string name="kelvin">Kelvin</string>
     <string name="windspeed">Wind Speed</string>
-    <string name="speed">Meter/Sec</string>
+    <string name="speed">km/h</string>
     <string name="milesperh">Miles/Hour</string>
     <string name="location">Location</string>
     <string name="gps">GPS</string>

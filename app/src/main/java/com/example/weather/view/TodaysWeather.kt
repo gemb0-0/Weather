@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -48,53 +49,23 @@ class TodaysWeather : Fragment() {
                 binding.recylerview2.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-
-
-
                 lifecycleScope.launch {
                     viewModel.weather.collect { response ->
                         when (response) {
                             is ApiResponse.Loading -> {
                                 Log.i("TodaysWeather", "loading: Loading")
                             }
-
                             is ApiResponse.Success -> {
-
-                                Log.i("TodaysWeatherrr", "sucess: ${response.data}")
-                                binding.humidityTV.text =
-                                    response.data.main!!.humidity.toString() + "%"
-                                binding.windTV.text =
-                                    response.data.wind!!.speed.toString()
-                                binding.visiviltyTV.text = response.data.visibility.toString() + "m"
-                                binding.tempTV.text =
-                                    response.data.main.temp.toInt()
-                                        .toString() // + Utils.temp       // "°C"
-                                //binding.highLowTV.text = response.data.main.temp_max.toInt().toString() + "°C" + " / " + response.data.main.temp_min.toInt().toString() + "°C"
-                                binding.highLowTV.text =
-                                    getString(R.string.feels_like) + response.data.main.feels_like.toInt()
-                                        .toString() //+  Utils.temp  //"°C"
-
-                                binding.descriptionTV.text = response.data.weather!![0].description
-
-                                // Assuming this is within a method or a coroutine scope
-                                val date = Date(response.data.dt!! * 1000) // Convert seconds to milliseconds
-
-// Create a SimpleDateFormat for month and year in English
-                                val monthYearFormat = SimpleDateFormat(" yyyy", Locale.ENGLISH)
-// Create a SimpleDateFormat for the day in the default locale
-                                val dayFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-
-// Format the date components
-                                val monthYear = monthYearFormat.format(date)
-                                val day = dayFormat.format(date)
-
-// Combine the results and set to TextView
-                                binding.dayInfoTV.text = getString(R.string.today) + " " + day + " " + monthYear
-                                  binding.pressureTV.text = response.data.main.pressure.toString()+"hPa"
-
-                                binding.sunriseTV.text =  convertUnixToTime(response.data.sys!!.sunrise!!.toLong(), response.data.timezone!!)
-                                binding.sunsetTV.text = convertUnixToTime(response.data.sys.sunset!!.toLong(), response.data.timezone!!)
-
+                                binding.pressureTV.text = response.data.get("pressure")
+                                binding.sunriseTV.text = response.data.get("sunrise")
+                                binding.sunsetTV.text = response.data.get("sunset")
+                                binding.humidityTV.text = response.data.get("humidity")
+                                binding.windTV.text = response.data.get("wind_speed")
+                                binding.visiviltyTV.text = response.data.get("visibility")
+                                binding.tempTV.text = response.data.get("temp")
+                                binding.highLowTV.text = response.data.get("highLow")
+                                binding.descriptionTV.text = response.data.get("description")
+                                binding.dayInfoTV.text = response.data.get("dayInfo")
                             }
 
                             is ApiResponse.Error -> {
@@ -134,7 +105,7 @@ class TodaysWeather : Fragment() {
                             }
 
                             is ApiResponse.Success -> {
-                                Log.i("WeeklyWeather", "sucess: ${response.data}")
+                                Log.i("hourlyWeather", "sucess: ${response.data}")
                                 adapter = TodaysWeatherAdapter(response.data, 10)
                                 binding.recylerview2.adapter = adapter
                             }
@@ -145,9 +116,6 @@ class TodaysWeather : Fragment() {
                             }
                         }
                     }
-
-//                }
-
                 }
             } else {
                 enableLocation()
@@ -180,25 +148,16 @@ class TodaysWeather : Fragment() {
             )
 
         val repo: IRepository = Repository()
+
         val factory = TodaysWeatherViewModel.TodaysWeatherViewModelFactory(
             fusedLocationProviderClient,
-            repo
+            repo,requireActivity().getSharedPreferences("settings", MODE_PRIVATE)
         )
         viewModel = ViewModelProvider(this, factory).get(TodaysWeatherViewModel::class.java)
 
 
     }
 
-    fun convertUnixToTime(unixTime: Long, timezoneOffset: Int): String {
-        // Create a date object from the Unix timestamp
-        val date = Date(unixTime * 1000) // Convert seconds to milliseconds
-        // Create a SimpleDateFormat to format the time
-        val sdf = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-
-        // Set the timezone based on the offset from UTC
-        sdf.timeZone = TimeZone.getTimeZone("GMT+${timezoneOffset / 3600}")
-        return sdf.format(date)
-    }
 
 
 

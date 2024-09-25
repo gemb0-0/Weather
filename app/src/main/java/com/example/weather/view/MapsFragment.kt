@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import com.example.weather.BuildConfig
 import com.example.weather.R
 import com.google.android.gms.common.api.Status
 
@@ -56,7 +57,7 @@ class MapsFragment : Fragment() {
 
         //
 ////      //  search
-        Places.initialize( requireContext() , getString(R.string.YOUR_API_KEY))
+        Places.initialize( requireContext() , BuildConfig.GOOGLE_MAPS_API_KEY)
 
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
 

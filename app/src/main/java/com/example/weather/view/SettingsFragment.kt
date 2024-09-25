@@ -50,8 +50,7 @@ lateinit var sharedpref: SharedPreferences
         viewModel.getSettings()
         showSettings()
         binding.buttonUpdateSettings.setOnClickListener {
-         val updated:MutableList<String> =   updateSettings()
-            viewModel.updateSettings(updated)
+            viewModel.updateSettings(updateSettings())
 
         }
     }
@@ -84,7 +83,7 @@ lateinit var sharedpref: SharedPreferences
                 }
                 when (it[2]) {
                     "km/h" -> {
-                        binding.radioButtonMetersPerHour.isChecked = true
+                        binding.radioButtonKilometersPerHour.isChecked = true
                     }
 
                     "miles/h" -> {
@@ -114,12 +113,12 @@ lateinit var sharedpref: SharedPreferences
         }
     }
 
-    private fun updateSettings() : MutableList<String> {
-        val updated:MutableList<String> = mutableListOf()
+    private fun updateSettings() : MutableMap<String,String> {
+        val updated:MutableMap<String,String> = mutableMapOf()
         val selectedLanguageId = binding.radioGroupLanguage.checkedRadioButtonId
         when (selectedLanguageId) {
             binding.radioButtonEnglish.id -> {
-               updated.add("en")
+                updated["language"] = "en"
                 val locale = Locale("en")
                 Locale.setDefault(locale)
 
@@ -131,7 +130,7 @@ lateinit var sharedpref: SharedPreferences
             }
 
             binding.radioButtonArabic.id -> {
-                updated.add("ar")
+                updated["language"] = "ar"
                 val locale = Locale("ar")
                 Locale.setDefault(locale)
 
@@ -147,46 +146,46 @@ lateinit var sharedpref: SharedPreferences
         val selectedTempId = binding.radioGroupTemperature.checkedRadioButtonId
         when (selectedTempId) {
             binding.radioButtonCelsius.id -> {
-                updated.add("°C")
+                updated["temp"] = "°C"
             }
 
             binding.radioButtonFahrenheit.id -> {
-                updated.add("°F")
+                updated["temp"] = "°F"
             }
 
             binding.radioButtonKelvin.id -> {
-                updated.add("°K")
+                updated["temp"] = "°K"
             }
         }
 
         val selectedWindId = binding.radioGroupWindSpeed.checkedRadioButtonId
         when (selectedWindId) {
-            binding.radioButtonMetersPerHour.id -> {
-                updated.add("km/h")
+            binding.radioButtonKilometersPerHour.id -> {
+                updated["wind"] = "km/h"
             }
 
             binding.radioButtonMilesPerHour.id -> {
-                updated.add("miles/h")
+                updated["wind"] = "miles/h"
             }
         }
         val selectedLocationId = binding.radioGroupLocation.checkedRadioButtonId
         when (selectedLocationId) {
             binding.radioButtonGps.id -> {
-                updated.add("gps")
+                updated["location"] = "gps"
             }
 
             binding.radioButtonMap.id -> {
-                updated.add("location")
+                updated["location"] = "location"
             }
         }
         val selectedNotificationId = binding.radioGroupNotifications.checkedRadioButtonId
         when (selectedNotificationId) {
             binding.radioButtonEnableNotifications.id -> {
-                updated.add("enable")
+                updated["notification"] = "enable"
             }
 
             binding.radioButtonDisableNotifications.id -> {
-                updated.add("disable")
+                updated["notification"] = "disable"
             }
         }
         return updated

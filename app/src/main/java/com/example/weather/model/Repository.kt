@@ -63,7 +63,7 @@ class Repository : IRepository {
 
     }
 
-    override fun UpdateSettings(sharedpref: SharedPreferences, updatedSettings: MutableList<String>) {
+    override fun UpdateSettings(sharedpref: SharedPreferences, updatedSettings: MutableMap<String,String>) {
         localDataSource.updateSettings(sharedpref, updatedSettings)
     }
 

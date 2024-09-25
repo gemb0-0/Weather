@@ -14,11 +14,11 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(var _repo: IRepository, var sharedpref: SharedPreferences):ViewModel() {
 
-    private val _Settings = MutableStateFlow<MutableList<String?>> (mutableListOf("metric", "en", "10"))
+    private val _Settings = MutableStateFlow<MutableList<String?>> (mutableListOf())
    val Settings: StateFlow<MutableList<String?>> = _Settings
 
 
-    fun updateSettings(updatedSettings: MutableList<String> ) {
+    fun updateSettings(updatedSettings: MutableMap<String,String> ) {
         _repo.UpdateSettings(sharedpref, updatedSettings)
     }
 
