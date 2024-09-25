@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/viewPagerFragment"
+            android:icon="@drawable/baseline_home_24"
+            android:title="" />
+
+        <item
+            android:id="@+id/todaysWeather"
+            android:icon="@drawable/baseline_notifications_24"
+            android:title="" />
+
+        <item
+            android:id="@+id/settingsFragment2"
+            android:icon="@drawable/baseline_settings_24"
+            android:title="" />
+    </group>
+</menu>

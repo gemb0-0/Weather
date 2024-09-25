@@ -25,5 +25,12 @@
         android:id="@+id/viewPagerFragment"
         android:name="com.example.weather.view.ViewPagerFragment"
         android:label="fragment_view_pager"
-        tools:layout="@layout/fragment_view_pager" />
+        tools:layout="@layout/fragment_view_pager" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_settingsFragment22"
+            app:destination="@id/settingsFragment2" />
+        <action
+            android:id="@+id/action_viewPagerFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
 </navigation>

@@ -1,2 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">الطقس</string>
+    <string name="hello_blank_fragment">مرحبا، هذا جزء فارغ</string>
+    <string name="language">اللغة</string>
+    <string name="english_Lang">الإنجليزية</string>
+    <string name="arabic_lang">العربية</string>
+    <string name="temp">درجة الحرارة</string>
+    <string name="celsius">مئوية</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="kelvin">كلفن</string>
+    <string name="windspeed">سرعة الرياح</string>
+    <string name="speed">متر/ثانية</string>
+    <string name="milesperh">ميل/ساعة</string>
+    <string name="location">الموقع</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="map">الخريطة</string>
+    <string name="notification">الإشعارات</string>
+    <string name="enable">تمكين</string>
+    <string name="disable">تعطيل</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">حسناً</string>
+    <string name="lang">ar</string>
+    <string name="today">اليوم</string>
+    <string name="settings">الإعدادات</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="home">الرئيسية</string>
+    <string name="no_saved_location">لم تقم بحفظ أي موقع</string>
+    <string name="enable_the_location_to_use_the_app">قم بتمكين الموقع لاستخدام التطبيق</string>
+    <string name="apply">تطبيق</string>
+    <string name="tomorrow">غداً</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="Pressure">الضغط</string>
+    <string name="Wind">الرياح</string>
+    <string name="Sunrise">شروق الشمس</string>
+    <string name="Sunset">غروب الشمس</string>
+    <string name="Visibility">الرؤية</string>
+    <string name="updatesettings">تحديث الإعدادات</string>
+    <string name="feels_like">"يشعر وكأنه "</string>
+</resources>
