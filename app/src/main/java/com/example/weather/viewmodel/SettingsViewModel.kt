@@ -5,11 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather.model.IRepository
-import com.example.weather.model.Utils
-import com.example.weather.model.remoteDataSource.ApiResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(var _repo: IRepository, var sharedpref: SharedPreferences):ViewModel() {
@@ -19,7 +16,7 @@ class SettingsViewModel(var _repo: IRepository, var sharedpref: SharedPreference
 
 
     fun updateSettings(updatedSettings: MutableMap<String,String> ) {
-        _repo.UpdateSettings(sharedpref, updatedSettings)
+        _repo.updateSettings(sharedpref, updatedSettings)
     }
 
     fun getSettings() {

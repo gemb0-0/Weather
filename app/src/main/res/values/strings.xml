@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="language">Language</string>
     <string name="english_Lang">English</string>
     <string name="arabic_lang">Arabic</string>
@@ -37,6 +36,8 @@
     <string name="Visibility">Visibility</string>
     <string name="updatesettings">Update settings</string>
     <string name="feels_like">"Feels Like "</string>
+    <string name="no_connection">"No Connection "</string>
     <string name="sunset">Sunset</string>
     <string name="sunrise">Sunrise</string>
+    <string name="connection">Connection Restored</string>
 </resources>

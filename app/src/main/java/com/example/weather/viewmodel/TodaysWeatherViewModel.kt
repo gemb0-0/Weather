@@ -1,6 +1,5 @@
 package com.example.weather.viewmodel
 
-import WeatherResponse
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.location.Location
@@ -10,10 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather.BuildConfig
-import com.example.weather.R
 import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.IRepository
-import com.example.weather.model.Utils
+import com.example.weather.Utils.Utils
 import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +24,7 @@ import java.util.Locale
 class TodaysWeatherViewModel(
     var fusedLocation: FusedLocationProviderClient,
     var _repo: IRepository,
-    var sharedpref: SharedPreferences
+    var sharedpref: MutableMap<String, SharedPreferences>
 
 ) : ViewModel() {
     lateinit var locationManager: LocationManager
@@ -37,44 +35,35 @@ class TodaysWeatherViewModel(
         fusedLocationProviderClient = fusedLocation
     }
 
-    private val _weather = MutableStateFlow<ApiResponse<MutableMap<String,String>>>(ApiResponse.Loading)
-    val weather: StateFlow<ApiResponse<MutableMap<String,String>>> = _weather
+    private var _weather =
+        MutableStateFlow<ApiResponse<MutableMap<String, String>>>(ApiResponse.Loading)
+    val weather: StateFlow<ApiResponse<MutableMap<String, String>>> = _weather
 
 
-    private val _hourlyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> =
+    private var _hourlyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> =
         MutableStateFlow(
             ApiResponse.Loading
         )
     val hourlyWeather: StateFlow<ApiResponse<List<Triple<String, String, String>>>> = _hourlyWeather
 
-    private val _weeklyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> =
+    private var _weeklyWeather: MutableStateFlow<ApiResponse<List<Triple<String, String, String>>>> =
         MutableStateFlow(ApiResponse.Loading)
     val weeklyWeather: StateFlow<ApiResponse<List<Triple<String, String, String>>>> = _weeklyWeather
 
     private val _Settings = MutableStateFlow<MutableList<String?>>(mutableListOf())
-    fun getSettings() {
+
+    fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>) {
         viewModelScope.launch {
-            _repo.getSettings(sharedpref).collect { it ->
-                _Settings.value = it
+            _repo.getFromSharedPref(sharedPrefObj).collect() { it ->
+                Log.i("SharedPrefW", it.first.toString())
+                Log.i("SharedPrefH", it.second.toString())
+                Log.i("SharedPrefW", it.third.toString())
+                _weather.value = ApiResponse.Success(it.first)
+                _hourlyWeather.value = ApiResponse.Success(it.second)
+                _weeklyWeather.value = ApiResponse.Success(it.third)
+
+
             }
-
-        }
-
-    }
-
-
-    fun convertTemp(temp: Double): String {
-        when (_Settings.value[1]) {
-            "°C" -> return temp.toInt().toString() + "°C"
-            "°F" -> return Utils.celsiusToFahrenheit(temp).toInt().toString() + "°F"
-            else -> return Utils.celsiusToKelvin(temp).toInt().toString() + "°K"
-        }
-    }
-    fun convertWindSpeed(speed: Double): String {
-        when (_Settings.value[2]) {
-            "km/h" -> return speed.toInt().toString() + "km/h"
-            else-> return Utils.kmToMiles(speed).toInt().toString() + "miles/h"
-
         }
     }
 
@@ -91,21 +80,24 @@ class TodaysWeatherViewModel(
                     "metric",
                     Locale.getDefault().toString()
                 ).collect() { data ->
-                    Log.i("WeatherdataResponse", data.toString())
-                  var list: MutableMap<String,String> = mutableMapOf()
+                    val list: MutableMap<String, String> = mutableMapOf()
                     list["temp"] = convertTemp(data.main!!.temp)
                     list["feels_like"] = convertTemp(data.main.feels_like)
                     list["temp_max"] = convertTemp(data.main.temp_max)
                     list["temp_min"] = convertTemp(data.main.temp_min)
                     list["description"] = data.weather!![0].description
-                    list["pressure"] = data.main.pressure.toString()+" hPa"
+                    list["pressure"] = data.main.pressure.toString() + " hPa"
                     list["visibility"] = data.visibility.toString() + " m"
-                    list["sunrise"] = Utils.convertUnixToTime(data.sys!!.sunrise!!.toLong(), data.timezone!!)
-                    list["sunset"] = Utils.convertUnixToTime(data.sys.sunset!!.toLong(), data.timezone!!)
-                    list["wind_speed"] =  convertWindSpeed(data.wind!!.speed)
+                    list["sunrise"] =
+                        Utils.convertUnixToTime(data.sys!!.sunrise!!.toLong(), data.timezone!!)
+                    list["sunset"] =
+                        Utils.convertUnixToTime(data.sys.sunset!!.toLong(), data.timezone!!)
+                    list["wind_speed"] = convertWindSpeed(data.wind!!.speed)
                     list["humidity"] = data.main.humidity.toString() + "%"
-                    list["dayInfo"] =  formatDateFromTimestamp(data.dt!!.toLong())
+                    list["dayInfo"] = formatDateFromTimestamp(data.dt!!.toLong())
                     _weather.value = ApiResponse.Success(list)
+                    _repo.saveWeatherResponse(sharedpref["weatherResponse"]!!, list)
+
                 }
             } catch (e: Exception) {
                 _weather.value = ApiResponse.Error(e.message ?: "Unknown error")
@@ -122,12 +114,14 @@ class TodaysWeatherViewModel(
                     Log.i("WeeklyWeatherResponse", data.toString())
                     val listWeekly: MutableList<Triple<String, String, String>> = mutableListOf()
                     for (i in data.list) {
-                        val weatherdesc = i.weather[0].main
+                        val weatherDesc = i.weather[0].main
                         val temp = convertTemp(i.temp.min) + "/" + convertTemp(i.temp.max)
-                        listWeekly.add(Triple(weatherdesc, temp, i.weather[0].icon))
+                        listWeekly.add(Triple(weatherDesc, temp, i.weather[0].icon))
                     }
                     Log.i("WeeklyWeatherList", listWeekly.toString())
                     _weeklyWeather.value = ApiResponse.Success(listWeekly)
+                    _repo.saveWeeklyResponse(sharedpref.get("weeklyWeatherResponse")!!, listWeekly)
+
                 }
             } catch (e: Exception) {
                 _weeklyWeather.value = ApiResponse.Error(e.message ?: "Unknown error")
@@ -148,16 +142,42 @@ class TodaysWeatherViewModel(
                         list.add(Triple(time, temp, i.weather[0].icon))
                     }
                     _hourlyWeather.value = ApiResponse.Success(list)
+                    _repo.saveHourlyResponse(sharedpref.get("hourlyWeatherResponse")!!, list)
+
                 }
             } catch (e: Exception) {
                 _hourlyWeather.value = ApiResponse.Error(e.message ?: "Unknown error")
             }
-
-
         }
 
 
     }
+
+    fun getSettings() {
+        viewModelScope.launch {
+            _repo.getSettings(sharedpref.get("settings")!!).collect { it ->
+                _Settings.value = it
+            }
+        }
+    }
+
+
+    fun convertTemp(temp: Double): String {
+        when (_Settings.value[1]) {
+            "°C" -> return temp.toInt().toString() + "°C"
+            "°F" -> return Utils.celsiusToFahrenheit(temp).toInt().toString() + "°F"
+            else -> return Utils.celsiusToKelvin(temp).toInt().toString() + "°K"
+        }
+    }
+
+    fun convertWindSpeed(speed: Double): String {
+        when (_Settings.value[2]) {
+            "km/h" -> return speed.toInt().toString() + " km/h"
+            else -> return Utils.kmToMiles(speed).toInt().toString() + " miles/h"
+
+        }
+    }
+
 
     fun formatDateFromTimestamp(timestamp: Long): String {
         val date = Date(timestamp * 1000L)
@@ -182,7 +202,7 @@ class TodaysWeatherViewModel(
     class TodaysWeatherViewModelFactory(
         var fusedLocation: FusedLocationProviderClient,
         var _repo: IRepository,
-        var sharedpref: SharedPreferences
+        var sharedpref: MutableMap<String, SharedPreferences>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return TodaysWeatherViewModel(fusedLocation, _repo, sharedpref) as T

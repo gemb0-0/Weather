@@ -1,7 +1,7 @@
-package com.example.weather.model
+package com.example.weather.Utils
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import WeatherResponse
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,6 +32,10 @@ object Utils {
         // Set the timezone based on the offset from UTC
         sdf.timeZone = TimeZone.getTimeZone("GMT+${timezoneOffset / 3600}")
         return sdf.format(date)
+    }
+
+    fun toJson(data: WeatherResponse): String? {
+        return Gson().toJson(data)
     }
 
 }

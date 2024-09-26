@@ -8,19 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.weather.databinding.FragmentSettingsBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
-import com.example.weather.model.Utils
 import com.example.weather.viewmodel.SettingsViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 

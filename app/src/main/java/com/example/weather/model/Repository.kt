@@ -63,7 +63,7 @@ class Repository : IRepository {
 
     }
 
-    override fun UpdateSettings(sharedpref: SharedPreferences, updatedSettings: MutableMap<String,String>) {
+    override fun updateSettings(sharedpref: SharedPreferences, updatedSettings: MutableMap<String,String>) {
         localDataSource.updateSettings(sharedpref, updatedSettings)
     }
 
@@ -74,6 +74,32 @@ class Repository : IRepository {
     override fun getSettings(sharedpref: SharedPreferences): Flow<MutableList<String?>> {
        return localDataSource.getSettings(sharedpref)
     }
+
+    override fun saveWeatherResponse(get: SharedPreferences, data: MutableMap<String, String>) {
+        localDataSource.saveWeatherResponse(get, data)
+    }
+
+    override fun saveWeeklyResponse(get: SharedPreferences, data: MutableList<Triple<String, String, String>>) {
+        localDataSource.saveWeeklyResponse(get, data)
+    }
+
+    override fun saveHourlyResponse(
+        get: SharedPreferences,
+        list: MutableList<Triple<String, String, String>>
+    ) {
+        return localDataSource.saveHourlyResponse(get, list)
+    }
+
+    override fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>)    : Flow<Triple<MutableMap<String, String>, List<Triple<String, String, String>>, List<Triple<String, String, String>>>>
+    {
+
+          return localDataSource.getFromSharedPref(sharedPrefObj)
+
+    }
+
+
+
+
 
 
 }
