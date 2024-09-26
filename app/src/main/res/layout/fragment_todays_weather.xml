@@ -9,11 +9,17 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,10 +30,11 @@
                     android:id="@+id/imageView2"
                     android:layout_width="match_parent"
                     android:layout_height="390dp"
-                    android:layout_marginStart="4dp"
                     android:layout_marginTop="70dp"
                     android:src="@drawable/cloudy"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,6 +98,7 @@
                 android:id="@+id/recylerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp" />
 
@@ -98,11 +106,14 @@
                 android:id="@+id/recylerview2"
                 android:layout_width="match_parent"
                 android:layout_height="730dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
                 android:layout_marginBottom="20dp"
-                android:nestedScrollingEnabled="false" />
+                android:hapticFeedbackEnabled="false"
+                android:nestedScrollingEnabled="false"
+
+                />
 
 
             <androidx.cardview.widget.CardView
@@ -112,7 +123,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="50dp"
                 app:cardBackgroundColor="@color/secondary"
-                app:cardCornerRadius="30dp">
+                app:cardCornerRadius="25dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"

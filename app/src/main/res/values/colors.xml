@@ -18,8 +18,8 @@
     <color name="beige">#e9e4cb</color>
     <color name="blue">#c6e0f7</color>
 
-    <color name="primary">#e9e4cb</color>
-    <color name="secondary">#c6e0f7</color>
+    <color name="primary">#c6e0f7</color>
+    <color name="secondary">#e9e4cb</color>
     <color name="primary_varient">#94c2e3</color>
     <color name="secondary_varient">#c1bfa4</color>
 

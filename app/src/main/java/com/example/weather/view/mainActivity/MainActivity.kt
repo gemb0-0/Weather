@@ -2,12 +2,15 @@ package com.example.weather.view.mainActivity
 
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         val intentFilter: IntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         networkChangeReceiver = NetworkChangeReceiver(binding.root)
         registerReceiver(networkChangeReceiver, intentFilter)
@@ -45,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         actionBar!!.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setDisplayShowHomeEnabled(true)
+
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.navigationView, navController)
 

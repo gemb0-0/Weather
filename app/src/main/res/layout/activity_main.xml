@@ -44,7 +44,6 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             app:itemBackground="@drawable/nav_item_background"
-            app:itemRippleColor="#03A9F4"
             app:menu="@menu/menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
