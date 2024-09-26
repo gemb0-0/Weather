@@ -1,7 +1,6 @@
-package com.example.weather.view
+package com.example.weather.view.map
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.weather.BuildConfig
 import com.example.weather.R
 import com.google.android.gms.common.api.Status
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
@@ -29,16 +25,16 @@ class MapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
 
-        val sydney = LatLng(-34.0, 151.0)
+        val sydney = LatLng(30.033333, 31.233334)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         //googleMap.animateCamera(CameraUpdateFactory.zoomTo(18f), 2000, null)
-        googleMap.addMarker(MarkerOptions().position(sydney).draggable(true))
+       // googleMap.addMarker(MarkerOptions().position(sydney).draggable(true))
 
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         //add an alert
         googleMap.setOnMapClickListener {
             googleMap.clear()
-            googleMap.addMarker(MarkerOptions().position(it).draggable(true))
+           // googleMap.addMarker(MarkerOptions().position(it).draggable(true))
         }
     }
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.SettingsFragment">
+    android:background="@color/secondary"
+    tools:context=".view.settings.SettingsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
-                app:cardBackgroundColor="@color/secondary"
+                app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="35dp">
 
                 <LinearLayout
@@ -75,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
-                app:cardBackgroundColor="@color/secondary"
+                app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="35dp">
 
                 <LinearLayout
@@ -136,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
-                app:cardBackgroundColor="@color/secondary"
+                app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="35dp">
 
                 <LinearLayout
@@ -189,7 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
-                app:cardBackgroundColor="@color/secondary"
+                app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="35dp">
 
                 <LinearLayout
@@ -242,7 +243,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
-                app:cardBackgroundColor="@color/secondary"
+                app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="35dp">
 
                 <LinearLayout
@@ -295,7 +296,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/updatesettings" />
+                android:text="@string/updatesettings"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 

@@ -1,24 +1,18 @@
-package com.example.weather.view
+package com.example.weather.view.mainActivity
 
-import android.content.Context
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.weather.R
@@ -26,9 +20,6 @@ import com.example.weather.Utils.NetworkChangeReceiver
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
-import com.example.weather.viewmodel.MainActivityViewModel
-import com.example.weather.viewmodel.TodaysWeatherViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Locale
 

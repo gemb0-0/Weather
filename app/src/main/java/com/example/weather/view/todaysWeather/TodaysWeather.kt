@@ -1,4 +1,4 @@
-package com.example.weather.view
+package com.example.weather.view.todaysWeather
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -22,9 +22,9 @@ import com.example.weather.databinding.FragmentTodaysWeatherBinding
 import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.Repository
 import com.example.weather.model.IRepository
-import com.example.weather.viewmodel.TodaysWeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class TodaysWeather : Fragment() {
     lateinit var binding: FragmentTodaysWeatherBinding
@@ -179,7 +179,7 @@ class TodaysWeather : Fragment() {
                         binding.windTV.text = response.data.get("wind_speed")
                         binding.visiviltyTV.text = response.data.get("visibility")
                         binding.tempTV.text = response.data.get("temp")
-                        binding.highLowTV.text = response.data.get("highLow")
+                        binding.feelsLikeTV.text = ContextCompat.getString(requireContext(),R.string.feels_like)+" "+ response.data.get("feels_like")
                         binding.descriptionTV.text = response.data.get("description")
                         binding.dayInfoTV.text = response.data.get("dayInfo")
                         binding.dayInfoTV.text = response.data.get("dayInfo")

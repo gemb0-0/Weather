@@ -1,4 +1,4 @@
-package com.example.weather.view
+package com.example.weather.view.settings
 
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.weather.databinding.FragmentSettingsBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
-import com.example.weather.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
 

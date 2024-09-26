@@ -2,6 +2,7 @@ package com.example.weather.model.remoteDataSource
 
 import ForcastResponse
 import WeatherResponse
+import android.util.Log
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -66,7 +67,10 @@ class RemoteDataSource private constructor(): IRemoteDataSource {
 
 
     override suspend fun getWeatherHourly(lon: String, lat: String, appid: String, units:String, lang:String): WeatherResponse{
-        return apiService.getWeatherHourly(lon, lat, appid,units,lang )
+        Log.i("Langggggggggggg", lang)
+        val response = apiService.getWeatherHourly(lon, lat, appid, units, lang)
+        Log.i("WeatherResponse", response.toString())
+        return response
     }
 
     override suspend fun getWeeklyWeather  (
@@ -74,7 +78,9 @@ class RemoteDataSource private constructor(): IRemoteDataSource {
         lat: String,
         appid: String,
         units: String, lang: String): ForcastResponse {
-        return apiService.getWeatherWeekly(lon, lat, appid,units,lang )
+       val response = apiService.getWeatherWeekly(lon, lat, appid, units, lang)
+        Log.i("WeatherResponse", response.toString())
+        return response
     }
 
     override suspend fun getWeather(
@@ -84,7 +90,9 @@ class RemoteDataSource private constructor(): IRemoteDataSource {
         units: String,
         lang: String
     ): WeatherResponse {
-        return apiService.getWeather(lon, lat, appid,units,lang )
+       val response = apiService.getWeather(lon, lat, appid, units, lang)
+        Log.i("WeatherResponse", response.toString())
+        return response
     }
 
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/primary"
-    tools:context=".view.TodaysWeather">
+    tools:context=".view.todaysWeather.TodaysWeather">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/highLow_TV"
+                    android:id="@+id/feels_likeTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Feels like"

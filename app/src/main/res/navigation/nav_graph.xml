@@ -8,22 +8,22 @@
 
     <fragment
         android:id="@+id/settingsFragment2"
-        android:name="com.example.weather.view.SettingsFragment"
+        android:name="com.example.weather.view.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/todaysWeather"
-        android:name="com.example.weather.view.TodaysWeather"
+        android:name="com.example.weather.view.todaysWeather.TodaysWeather"
         android:label="fragment_todays_weather"
         tools:layout="@layout/fragment_todays_weather" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.weather.view.MapsFragment"
+        android:name="com.example.weather.view.map.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.example.weather.view.ViewPagerFragment"
+        android:name="com.example.weather.view.viewPager.ViewPagerFragment"
         android:label="fragment_view_pager"
         tools:layout="@layout/fragment_view_pager" >
         <action

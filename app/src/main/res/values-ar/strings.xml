@@ -30,8 +30,8 @@
     <string name="humidity">الرطوبة</string>
     <string name="Pressure">الضغط</string>
     <string name="Wind">الرياح</string>
-    <string name="Sunrise">شروق الشمس</string>
-    <string name="Sunset">غروب الشمس</string>
+    <string name="Sunrise">الشروق</string>
+    <string name="Sunset">الغروب</string>
     <string name="Visibility">الرؤية</string>
     <string name="updatesettings">تحديث الإعدادات</string>
     <string name="feels_like">الحراره المحسوسه</string>

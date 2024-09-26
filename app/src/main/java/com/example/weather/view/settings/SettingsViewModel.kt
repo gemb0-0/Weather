@@ -1,4 +1,4 @@
-package com.example.weather.viewmodel
+package com.example.weather.view.settings
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel

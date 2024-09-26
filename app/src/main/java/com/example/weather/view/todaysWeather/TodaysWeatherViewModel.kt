@@ -1,14 +1,17 @@
-package com.example.weather.viewmodel
+package com.example.weather.view.todaysWeather
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather.BuildConfig
+import com.example.weather.R
 import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.IRepository
 import com.example.weather.Utils.Utils
@@ -52,6 +55,7 @@ class TodaysWeatherViewModel(
 
     private val _Settings = MutableStateFlow<MutableList<String?>>(mutableListOf())
 
+
     fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>) {
         viewModelScope.launch {
             _repo.getFromSharedPref(sharedPrefObj).collect() { it ->
@@ -67,12 +71,13 @@ class TodaysWeatherViewModel(
         }
     }
 
-
     fun getLocalWeather(location: Location) {
         getSettings()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _weather.value = ApiResponse.Loading
+
+                Log.i("Localeeeeeeeeee", Locale.getDefault().toString())
                 _repo.getWeather(
                     location.longitude.toString(),
                     location.latitude.toString(),
@@ -114,7 +119,7 @@ class TodaysWeatherViewModel(
                     Log.i("WeeklyWeatherResponse", data.toString())
                     val listWeekly: MutableList<Triple<String, String, String>> = mutableListOf()
                     for (i in data.list) {
-                        val weatherDesc = i.weather[0].main
+                        val weatherDesc = i.weather[0].description
                         val temp = convertTemp(i.temp.min) + "/" + convertTemp(i.temp.max)
                         listWeekly.add(Triple(weatherDesc, temp, i.weather[0].icon))
                     }
@@ -161,7 +166,6 @@ class TodaysWeatherViewModel(
         }
     }
 
-
     fun convertTemp(temp: Double): String {
         when (_Settings.value[1]) {
             "°C" -> return temp.toInt().toString() + "°C"
@@ -178,11 +182,10 @@ class TodaysWeatherViewModel(
         }
     }
 
-
     fun formatDateFromTimestamp(timestamp: Long): String {
         val date = Date(timestamp * 1000L)
 
-        val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
+        val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
 
         return dateFormat.format(date)
     }

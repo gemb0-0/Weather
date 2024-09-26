@@ -27,7 +27,7 @@
             android:value="${GOOGLE_MAPS_API_KEY}" />
 
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.mainActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
