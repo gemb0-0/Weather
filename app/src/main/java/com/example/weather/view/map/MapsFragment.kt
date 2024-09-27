@@ -1,18 +1,21 @@
 package com.example.weather.view.map
 
+import android.content.Context.MODE_PRIVATE
 import android.location.Address
 import android.location.Geocoder
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.annotation.Nullable
+import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMapsBinding
+import com.example.weather.model.Repository
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,23 +26,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
     lateinit var binding: FragmentMapsBinding
+    lateinit var viewModel: MapsViewModel
     private var googleMap: GoogleMap? = null
-     var mylatLng: LatLng? = null
-    private val callback = OnMapReadyCallback { map ->
-        googleMap = map
-       val location = LatLng(30.033333, 31.233334)
-       // googleMap?.uiSettings?.isZoomControlsEnabled = false //might cause a problem
-        map.uiSettings.isZoomGesturesEnabled = true
-
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(location))
-        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(8f), 2000, null)
-        googleMap?.setOnMapClickListener { latLng ->
-            googleMap?.clear()
-            googleMap?.addMarker(MarkerOptions().position(latLng).draggable(true))
-            mylatLng = latLng
-        }
-    }
-
+    var favLocation: Pair<String, LatLng>? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,35 +45,63 @@ class MapsFragment : Fragment() {
         val searchForPlace = binding.searchView
         searchByName(searchForPlace)
         binding.floatingActionButton.setOnClickListener {
-           if (mylatLng == null) {
+           if (favLocation == null) {
              Toast.makeText(requireContext(),
                  getString(R.string.please_select_a_location), Toast.LENGTH_SHORT).show()
            }
             else {
-
-
-               val bundle = Bundle()
-               parentFragmentManager.setFragmentResult("requestKey", bundle)
-               parentFragmentManager.popBackStack()
+               var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
+               viewModel = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)).get(MapsViewModel::class.java)
+                viewModel.saveLocation(favLocation!!)
+//
+//               val bundle = Bundle()
+//               parentFragmentManager.setFragmentResult("requestKey", bundle)
+//               parentFragmentManager.popBackStack()
+                Log.i("MapsFragment", "onViewCreated: $favLocation")
            }
+        }
+    }
+
+    val callback = OnMapReadyCallback { map ->
+        googleMap = map
+        val location = LatLng(30.06263, 31.24967)
+        // googleMap?.uiSettings?.isZoomControlsEnabled = false //might cause a problem
+        map.uiSettings.isZoomGesturesEnabled = true
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(location))
+        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(8f), 2000, null)
+
+        googleMap?.setOnMapClickListener { latLng ->
+            googleMap?.clear()
+            var address: MutableList<Address>? = Geocoder(requireContext()).getFromLocation(latLng.latitude, latLng.longitude, 1)
+            googleMap?.addMarker(MarkerOptions().position(latLng).draggable(true).title(
+                address?.get(0)?.getAddressLine(0)
+            ))?.showInfoWindow()
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            googleMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+
+            favLocation = Pair(address!![0].getAddressLine(0), latLng)
+
         }
     }
 
     private fun searchByName(searchForPlace: SearchView) {
         searchForPlace.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+
                 if (query != null && googleMap != null) {
+                    googleMap?.clear()
                     val geocoder = Geocoder(requireContext())
                     val addressList: List<Address>? = geocoder.getFromLocationName(query, 11)
                     if (!addressList.isNullOrEmpty()) {
                         val address = addressList[0]
+                        Log.i("address", "onQueryTextSubmit: $address")
                         val latLng = LatLng(address.latitude, address.longitude)
-                        mylatLng = latLng
                         val markerOptions =
                             MarkerOptions().position(latLng).title(address.getAddressLine(0))
-                        googleMap?.addMarker(markerOptions)
+                        googleMap?.addMarker(markerOptions)?.showInfoWindow()
                         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
                         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+                        favLocation = Pair(address.getAddressLine(0), latLng)
                     }
                 }
                 return true
@@ -93,9 +110,10 @@ class MapsFragment : Fragment() {
             override fun onQueryTextChange(query: String?): Boolean {
 
     //                if (query != null && googleMap != null) {
-    //                    val geocoder = Geocoder(requireContext())
-    //                    val addressList: MutableList<Address>? = geocoder.getFromLocationName(query, 15)
-    //                    Log.i(TAG, "onQueryTextChange: $addressList")
+//                        val geocoder = Geocoder(requireContext())
+//                        val addressList: MutableList<Address>? =
+//                            query?.let { geocoder.getFromLocationName(it, 15) }
+//                        Log.i("query", "onQueryTextChange: $addressList")
     //                    if (!addressList.isNullOrEmpty()) {
     //                        binding.recyler.visibility = View.VISIBLE
     //                        val myLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -129,17 +147,4 @@ class MapsFragment : Fragment() {
 //        })
 
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
 

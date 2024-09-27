@@ -25,9 +25,9 @@ import java.util.Date
 import java.util.Locale
 
 class TodaysWeatherViewModel(
-    var fusedLocation: FusedLocationProviderClient,
-    var _repo: IRepository,
-    var sharedpref: MutableMap<String, SharedPreferences>
+    val fusedLocation: FusedLocationProviderClient,
+    val _repo: IRepository,
+    val sharedpref: MutableMap<String, SharedPreferences>
 
 ) : ViewModel() {
     lateinit var locationManager: LocationManager

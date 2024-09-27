@@ -105,14 +105,11 @@
                 android:id="@+id/recylerview2"
                 android:layout_width="match_parent"
                 android:layout_height="730dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_gravity="center"
+              android:layout_marginHorizontal="15dp"
+                android:paddingHorizontal="7dp"
                 android:hapticFeedbackEnabled="false"
-                android:nestedScrollingEnabled="false"
-
-                />
+                android:nestedScrollingEnabled="false" />
 
 
             <androidx.cardview.widget.CardView
