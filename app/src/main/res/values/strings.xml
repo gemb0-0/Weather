@@ -24,7 +24,7 @@
     <string name="settings">settings</string>
     <string name="profile">profile</string>
     <string name="home">home</string>
-    <string name="no_saved_location">You haven\'t save any location</string>
+    <string name="no_saved_location">You haven\'t saved any location</string>
     <string name="enable_the_location_to_use_the_app">Enable the location to use the app</string>
     <string name="apply">Apply</string>
     <string name="tomorrow">Tomorrow</string>
@@ -40,4 +40,6 @@
     <string name="sunset">Sunset</string>
     <string name="sunrise">Sunrise</string>
     <string name="connection">Connection Restored</string>
+    <string name="search">Search</string>
+    <string name="please_select_a_location">Please select a location</string>
 </resources>
