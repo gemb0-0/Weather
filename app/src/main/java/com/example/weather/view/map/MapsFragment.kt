@@ -12,7 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMapsBinding
 import com.example.weather.model.Repository
@@ -29,6 +33,7 @@ class MapsFragment : Fragment() {
     lateinit var viewModel: MapsViewModel
     private var googleMap: GoogleMap? = null
     var favLocation: Pair<String, LatLng>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,22 +48,28 @@ class MapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
         val searchForPlace = binding.searchView
+
+
+
         searchByName(searchForPlace)
         binding.floatingActionButton.setOnClickListener {
-           if (favLocation == null) {
-             Toast.makeText(requireContext(),
-                 getString(R.string.please_select_a_location), Toast.LENGTH_SHORT).show()
-           }
-            else {
-               var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
-               viewModel = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)).get(MapsViewModel::class.java)
+            if (favLocation == null) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.please_select_a_location), Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
+                viewModel = ViewModelProvider(
+                    this,
+                    MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)
+                ).get(MapsViewModel::class.java)
                 viewModel.saveLocation(favLocation!!)
-//
-//               val bundle = Bundle()
-//               parentFragmentManager.setFragmentResult("requestKey", bundle)
-//               parentFragmentManager.popBackStack()
+
+                parentFragmentManager.popBackStack()
+
                 Log.i("MapsFragment", "onViewCreated: $favLocation")
-           }
+            }
         }
     }
 
@@ -72,14 +83,24 @@ class MapsFragment : Fragment() {
 
         googleMap?.setOnMapClickListener { latLng ->
             googleMap?.clear()
-            var address: MutableList<Address>? = Geocoder(requireContext()).getFromLocation(latLng.latitude, latLng.longitude, 1)
-            googleMap?.addMarker(MarkerOptions().position(latLng).draggable(true).title(
-                address?.get(0)?.getAddressLine(0)
-            ))?.showInfoWindow()
+            var address: MutableList<Address>? =
+                Geocoder(requireContext()).getFromLocation(latLng.latitude, latLng.longitude, 1)
+            googleMap?.addMarker(
+                MarkerOptions().position(latLng).draggable(true).title(
+                    address?.get(0)?.getAddressLine(0)
+
+                        ?: getString(R.string.unknown_location)
+                )
+            )?.showInfoWindow()
             googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
             googleMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
-
-            favLocation = Pair(address!![0].getAddressLine(0), latLng)
+            Log.i("MapsFragment", "onMapClick: $address")
+            Log.i("MapsFragment", "onMapClick:10 ${address?.get(0)?.subAdminArea}")
+            Log.i("MapsFragment", "onMapClick:0 ${address?.get(0)?.countryName}")
+            favLocation = Pair(
+                address?.get(0)?.countryName + "," + (address?.get(0)?.subAdminArea
+                    ?: "Unknown location"), latLng
+            )
 
         }
     }
@@ -109,24 +130,35 @@ class MapsFragment : Fragment() {
 
             override fun onQueryTextChange(query: String?): Boolean {
 
-    //                if (query != null && googleMap != null) {
+                //                if (query != null && googleMap != null) {
 //                        val geocoder = Geocoder(requireContext())
 //                        val addressList: MutableList<Address>? =
 //                            query?.let { geocoder.getFromLocationName(it, 15) }
 //                        Log.i("query", "onQueryTextChange: $addressList")
-    //                    if (!addressList.isNullOrEmpty()) {
-    //                        binding.recyler.visibility = View.VISIBLE
-    //                        val myLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    //                        binding.recyler.layoutManager = myLayoutManager
-    //                        binding.recyler.adapter = mapsAdapter(addressList)
-    //                    }
-    //                }
+                //                    if (!addressList.isNullOrEmpty()) {
+                //                        binding.recyler.visibility = View.VISIBLE
+                //                        val myLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                //                        binding.recyler.layoutManager = myLayoutManager
+                //                        binding.recyler.adapter = mapsAdapter(addressList)
+                //                    }
+                //                }
 
                 return true
             }
         }
 
         )
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // Set the result to pass back to Fragment A
+        val result = Bundle().apply {
+            putString("bundleKey", "someValue")
+        }
+        setFragmentResult("requestKey", result)
     }
 }
 

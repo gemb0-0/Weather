@@ -1,26 +1,19 @@
 package com.example.weather.model.localDataSource
 
+
 import android.content.SharedPreferences
 import android.util.Log
-import com.google.android.datatransport.cct.internal.LogResponse.fromJson
+import com.example.weather.model.SharedConnctionStateViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
 
 
-class Sharedpref:ISharedpref {
-
-    override fun initiateSettings(sharedpref: SharedPreferences) {
-        val language = sharedpref.getString("language", "en")
-        val temp = sharedpref.getString("temp", "°C")
-        val wind = sharedpref.getString("wind", "km/h")
-        val location = sharedpref.getString("location", "gps")
-        val notification = sharedpref.getString("notification", "enable")
-
-
-    }
-
+class Sharedpref : ISharedpref {
 
     override fun updateSettings(
         sharedpref: SharedPreferences,
@@ -78,7 +71,7 @@ class Sharedpref:ISharedpref {
     }
 
 
-     fun loadWeatherResponse(get: SharedPreferences): MutableMap<String, String>? {
+    fun loadWeatherResponse(get: SharedPreferences): MutableMap<String, String>? {
         val json = get.getString("weather", null) // Retrieve the JSON string
         return json?.let {
             // Convert the JSON string back to a MutableMap using Gson
@@ -87,7 +80,7 @@ class Sharedpref:ISharedpref {
     }
 
 
-     fun loadWeeklyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
+    fun loadWeeklyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
         val json = get.getString("weekly", null) // Retrieve the JSON string
         return json?.let {
             // Convert the JSON string back to a MutableList of Triples
@@ -96,15 +89,13 @@ class Sharedpref:ISharedpref {
     }
 
 
-     fun loadHourlyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
+    fun loadHourlyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
         val json = get.getString("hourly", null) // Retrieve the JSON string
         return json?.let {
             // Convert the JSON string back to a MutableList of Triples
             Gson().fromJson(it, object : TypeToken<List<Triple<String, String, String>>>() {}.type)
         }
     }
-
-
 
 
     override fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>)
@@ -117,7 +108,41 @@ class Sharedpref:ISharedpref {
         }
     }
 
+    override fun saveLocation(myLatLng: Pair<String, LatLng>, sharedpref: SharedPreferences) {
+
+        val favourites = decodeLocation(sharedpref)
+        favourites.add(myLatLng)
+        val editor = sharedpref.edit()
+        editor.putString("favourites", Gson().toJson(favourites))
+        editor.apply()
+        sharedpref.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            Log.i("SharedPref", "saveLocation: $key")
+
+        })
+    }
+
+    override fun getFavourites(sharedpref: SharedPreferences): Flow<MutableList<Pair<String, LatLng>>> {
+        val favourites = decodeLocation(sharedpref)
+        return flow {
+            emit(favourites)
+        }
+    }
+
+    override fun deleteFavourite(city: LatLng, sharedpref: SharedPreferences) {
+        val favourites = decodeLocation(sharedpref)
+        val cityString = "${city.latitude},${city.longitude}"
+        Log.i("SharedPref", "deleteFavourite: ${LatLng(city.latitude, city.longitude)}")
+        val newFavourites = favourites.filter { it.second!= city }.toMutableList()
+        val editor = sharedpref.edit()
+        editor.putString("favourites", Gson().toJson(newFavourites))
+        editor.apply()
+    }
+
+
+    private fun decodeLocation(sharedpref: SharedPreferences): MutableList<Pair<String, LatLng>> {
+    val json = sharedpref.getString("favourites", null)
+    return json?.let {
+        Gson().fromJson(it, object : TypeToken<MutableList<Pair<String, LatLng>>>() {}.type)
+    } ?: mutableListOf()
 }
-
-
-
+}

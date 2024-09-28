@@ -2,10 +2,9 @@ package com.example.weather.view.mainActivity
 
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -23,8 +23,10 @@ import com.example.weather.Utils.NetworkChangeReceiver
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
+import com.example.weather.view.favourites.FavouritesFragment
 import kotlinx.coroutines.launch
 import java.util.Locale
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -41,7 +43,9 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+
 
         val intentFilter: IntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         networkChangeReceiver = NetworkChangeReceiver(binding.root)
@@ -49,12 +53,20 @@ class MainActivity : AppCompatActivity() {
         val actionBar: ActionBar? = supportActionBar
         actionBar!!.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setDisplayShowHomeEnabled(true)
 
         val navController = findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.navigationView, navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
 
-
+            when (destination.id) {
+              R.id.faveDetails -> {
+                    actionBar.hide()
+                }
+               else -> {
+                    actionBar.show()
+                }
+            }
+        }
 
         val sharedpref :SharedPreferences= getSharedPreferences("settings", MODE_PRIVATE)
         val repo: IRepository = Repository()
@@ -63,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         )
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         viewModel.getSettings()
+        Log.i("MainActivity", "onCreate: ${Locale.getDefault().language}")
         changeLocaleWhenStartingUp()
 
     }

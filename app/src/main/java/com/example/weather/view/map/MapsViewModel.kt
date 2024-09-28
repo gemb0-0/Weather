@@ -12,6 +12,7 @@ class MapsViewModel(
 ) : ViewModel() {
     fun saveLocation(myLatLng: Pair<String, LatLng>) {
         _repo.saveLocation(myLatLng, sharedpref)
+
     }
 
 

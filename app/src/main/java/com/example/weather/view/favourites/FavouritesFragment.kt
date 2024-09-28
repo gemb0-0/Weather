@@ -1,19 +1,29 @@
 package com.example.weather.view.favourites
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavController
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather.R
 import com.example.weather.databinding.FragmentFavouritesBinding
+import com.example.weather.model.Repository
+import com.example.weather.view.map.MapsFragment
+import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.launch
 
 
-class FavouritesFragment : Fragment() {
+class FavouritesFragment : Fragment(), onFavClick {
     lateinit var binding: FragmentFavouritesBinding
-
+    lateinit var viewModel: FavouritesViewModel
+    lateinit var adapter: FavouriteAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,11 +33,62 @@ class FavouritesFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.floatingActionButton.setOnClickListener {
-         val   navcontroller: NavController = findNavController()
-            navcontroller.navigate(R.id.action_viewPagerFragment_to_mapsFragment)
+        adapter = FavouriteAdapter(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = adapter
 
+
+        val sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
+        viewModel = FavouritesViewModel.FavouritesViewModelFactory(Repository(),sharedpref).create(FavouritesViewModel::class.java)
+        viewModel.getFavourites()
+        lifecycleScope.launch {
+            viewModel.fav.collect {
+                Log.i("FavouritesFragment", "onViewCreated: $it")
+                adapter.submitList(it)
+            }
         }
 
+        binding.floatingActionButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, MapsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            val result = bundle.getString("bundleKey")
+            if (result == "someValue") {
+                viewModel.getFavourites()
+                Log.i("FavouritesFragment", "listenerrrr ")
+            }
+        }
+
+
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            Log.i("FavouritesFragment", "onViewCreated: Refreshing")
+            viewModel.getFavourites()
+            binding.swipeRefreshLayout.isRefreshing = false
+            lifecycleScope.launch {
+                viewModel.fav.collect {
+                    Log.i("FavouritesFragment", "onResume: $it")
+                    adapter.submitList(it.toList())
+                }
+            }
+        }
+
+
+    }
+
+    override fun onFavClick(city: LatLng) {
+        Log.i("FavouriteAdapter no it's frag", "onFavClick: $city")
+        val bundle = Bundle()
+        bundle.putParcelable("city", city)
+        findNavController().navigate(R.id.faveDetails, bundle)
+    }
+
+    override fun inFavDelete(city: LatLng) {
+        Log.i("FavouriteAdapter no it's frag", "inFavDelete: $city")
+        viewModel.deleteFavourite(city)
     }
 }

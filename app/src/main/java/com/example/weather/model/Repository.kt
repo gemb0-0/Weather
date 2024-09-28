@@ -1,12 +1,13 @@
 package com.example.weather.model
 
 import ForcastResponse
+import com.example.weather.model.localDataSource.Sharedpref
 import WeatherResponse
 import android.content.SharedPreferences
 import com.example.weather.model.localDataSource.ISharedpref
-import com.example.weather.model.localDataSource.Sharedpref
 import com.example.weather.model.remoteDataSource.IRemoteDataSource
 import com.example.weather.model.remoteDataSource.RemoteDataSource
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -97,9 +98,17 @@ class Repository : IRepository {
 
     }
 
+    override fun saveLocation(myLatLng: Pair<String, LatLng>, sharedpref: SharedPreferences) {
+        localDataSource.saveLocation(myLatLng, sharedpref)
+    }
 
+    override fun getFavourites(sharedpref: SharedPreferences): Flow<MutableList<Pair<String, LatLng>>> {
+        return localDataSource.getFavourites(sharedpref)
+    }
 
-
+    override fun deleteFavourite(city: LatLng, sharedpref: SharedPreferences) {
+        localDataSource.deleteFavourite(city, sharedpref)
+    }
 
 
 }
