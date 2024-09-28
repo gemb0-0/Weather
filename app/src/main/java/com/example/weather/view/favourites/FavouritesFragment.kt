@@ -37,14 +37,22 @@ class FavouritesFragment : Fragment(), onFavClick {
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
 
-
         val sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
         viewModel = FavouritesViewModel.FavouritesViewModelFactory(Repository(),sharedpref).create(FavouritesViewModel::class.java)
         viewModel.getFavourites()
         lifecycleScope.launch {
             viewModel.fav.collect {
                 Log.i("FavouritesFragment", "onViewCreated: $it")
+                if(it.isEmpty()){
+                    binding.imageView4.visibility = View.VISIBLE
+                    binding.textView6.visibility = View.VISIBLE
+                }
+                else{
+                    binding.imageView4.visibility = View.GONE
+                    binding.textView6.visibility = View.GONE
+                }
                 adapter.submitList(it)
+
             }
         }
 
@@ -58,33 +66,24 @@ class FavouritesFragment : Fragment(), onFavClick {
         setFragmentResultListener("requestKey") { requestKey, bundle ->
             val result = bundle.getString("bundleKey")
             if (result == "someValue") {
+                (activity as AppCompatActivity).supportActionBar?.show()
                 viewModel.getFavourites()
                 Log.i("FavouritesFragment", "listenerrrr ")
             }
         }
-
-
-
         binding.swipeRefreshLayout.setOnRefreshListener {
             Log.i("FavouritesFragment", "onViewCreated: Refreshing")
             viewModel.getFavourites()
             binding.swipeRefreshLayout.isRefreshing = false
-            lifecycleScope.launch {
-                viewModel.fav.collect {
-                    Log.i("FavouritesFragment", "onResume: $it")
-                    adapter.submitList(it.toList())
-                }
-            }
         }
-
-
     }
+
 
     override fun onFavClick(city: LatLng) {
         Log.i("FavouriteAdapter no it's frag", "onFavClick: $city")
         val bundle = Bundle()
-        bundle.putParcelable("city", city)
-        findNavController().navigate(R.id.faveDetails, bundle)
+        bundle.putParcelable("city",city)
+        findNavController().navigate(R.id.todaysWeather, bundle)
     }
 
     override fun inFavDelete(city: LatLng) {

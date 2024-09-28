@@ -16,6 +16,7 @@ import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.IRepository
 import com.example.weather.Utils.Utils
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,18 +26,11 @@ import java.util.Date
 import java.util.Locale
 
 class TodaysWeatherViewModel(
-    val fusedLocation: FusedLocationProviderClient,
     val _repo: IRepository,
     val sharedpref: MutableMap<String, SharedPreferences>
 
 ) : ViewModel() {
     lateinit var locationManager: LocationManager
-
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    init {
-        fusedLocationProviderClient = fusedLocation
-    }
 
     private var _weather =
         MutableStateFlow<ApiResponse<MutableMap<String, String>>>(ApiResponse.Loading)
@@ -71,7 +65,7 @@ class TodaysWeatherViewModel(
         }
     }
 
-    fun getLocalWeather(location: Location) {
+    fun getLocalWeather(location: LatLng) {
         getSettings()
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -96,10 +90,12 @@ class TodaysWeatherViewModel(
                     list["sunrise"] =
                         Utils.convertUnixToTime(data.sys!!.sunrise!!.toLong(), data.timezone!!)
                     list["sunset"] =
-                        Utils.convertUnixToTime(data.sys.sunset!!.toLong(), data.timezone!!)
+                        Utils.convertUnixToTime(data.sys.sunset!!.toLong(), data.timezone)
                     list["wind_speed"] = convertWindSpeed(data.wind!!.speed)
                     list["humidity"] = data.main.humidity.toString() + "%"
                     list["dayInfo"] = formatDateFromTimestamp(data.dt!!.toLong())
+                    list["icon"] = data.weather[0].icon
+                    list["city"] = data.name.toString()
                     _weather.value = ApiResponse.Success(list)
                     _repo.saveWeatherResponse(sharedpref["weatherResponse"]!!, list)
 
@@ -191,11 +187,12 @@ class TodaysWeatherViewModel(
     }
 
     @SuppressLint("MissingPermission")
-    fun getFreshLocation() {
+    fun getFreshLocation( fusedLocation: FusedLocationProviderClient) {
         fusedLocation.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                // Log.i("Locationnnnnnnnnn", "Lat: ${location.latitude}, Long: ${location.longitude}")
-                getLocalWeather(location)
+                 Log.i("Locationnnnnnnnnn", "Lat: ${location.latitude}, Long: ${location.longitude}")
+                getLocalWeather(LatLng(location.latitude, location.longitude))
+
             }
         }
 
@@ -203,12 +200,11 @@ class TodaysWeatherViewModel(
 
 
     class TodaysWeatherViewModelFactory(
-        var fusedLocation: FusedLocationProviderClient,
         var _repo: IRepository,
         var sharedpref: MutableMap<String, SharedPreferences>
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return TodaysWeatherViewModel(fusedLocation, _repo, sharedpref) as T
+            return TodaysWeatherViewModel( _repo, sharedpref) as T
         }
     }
 

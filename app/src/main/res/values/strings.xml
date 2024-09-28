@@ -45,4 +45,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="unknown_location">Unknown Location</string>
+    <string name="no_alrams">You haven\'t set any alarms\n</string>
+    <string name="addalaram">Add alarm or notification\n</string>
+    <string name="alarm">alarm</string>
+    <string name="notifications">Notification</string>
+    <string name="choosed">Select date</string>
+    <string name="selecttime">Select time</string>
 </resources>

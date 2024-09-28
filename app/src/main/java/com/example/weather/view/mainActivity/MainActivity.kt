@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
 
-
         val intentFilter: IntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         networkChangeReceiver = NetworkChangeReceiver(binding.root)
         registerReceiver(networkChangeReceiver, intentFilter)
@@ -59,19 +58,20 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
             when (destination.id) {
-              R.id.faveDetails -> {
+                R.id.mapsFragment -> {
                     actionBar.hide()
                 }
-               else -> {
+
+                else -> {
                     actionBar.show()
                 }
             }
         }
 
-        val sharedpref :SharedPreferences= getSharedPreferences("settings", MODE_PRIVATE)
+        val sharedpref: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
         val repo: IRepository = Repository()
         val factory = MainActivityViewModel.MainActivityViewModelFactory(
-            repo,sharedpref
+            repo, sharedpref
         )
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         viewModel.getSettings()
@@ -114,13 +114,13 @@ class MainActivity : AppCompatActivity() {
                 binding.drawerLayout.openDrawer(GravityCompat.START)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
 
         }
     }
 
 }
-
 
 
 //
@@ -131,8 +131,6 @@ class MainActivity : AppCompatActivity() {
 //            Geocoder.GeocodeListener {
 //                locDetails.text = it[0].locality+", "+it[0].countryName
 //            })
-
-
 
 
 ////      //  search

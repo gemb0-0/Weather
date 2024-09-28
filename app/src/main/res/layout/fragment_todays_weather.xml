@@ -21,13 +21,22 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefreshLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/weathericon"
                     android:layout_width="match_parent"
                     android:layout_height="390dp"
                     android:layout_marginTop="70dp"
@@ -80,16 +89,27 @@
                     android:src="@drawable/sunny"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_editor_absoluteY="41dp" />
+                    tools:layout_editor_absoluteY="41dp"
+                    tools:ignore="MissingConstraints" />
+
 
                 <TextView
                     android:id="@+id/dayInfoTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                    app:layout_constraintBottom_toTopOf="@+id/citynameTV"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/imageView2" />
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/citynameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="23dp"
+                    android:layout_marginBottom="24dp"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/weathericon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

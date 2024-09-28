@@ -39,7 +39,7 @@ class TodaysWeatherAdapter(var weatherData : List<Triple<String,String,String>>,
     override fun onBindViewHolder(holder: HourlyWeatherViewHolder, position: Int) {
         holder.time.text= weatherData[position].first
         holder.temp.text= weatherData[position].second
-        Glide.with(holder.itemView.context).load("https://openweathermap.org/img/wn/${weatherData[position].third}.png").into(holder.icon)
+        Glide.with(holder.itemView.context).load("https://openweathermap.org/img/wn/${weatherData[position].third}@4x.png").into(holder.icon)
 
         if (numOfCards==10) {
 
