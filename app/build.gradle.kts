@@ -78,7 +78,7 @@ dependencies {
     //glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //material design
-    implementation ("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.material:material:1.13.0-alpha06")
     implementation ("androidx.navigation:navigation-fragment:2.5.3")
     implementation ("androidx.navigation:navigation-ui:2.5.3")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")

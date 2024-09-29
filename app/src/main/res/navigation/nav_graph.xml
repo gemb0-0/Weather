@@ -10,7 +10,11 @@
         android:id="@+id/settingsFragment2"
         android:name="com.example.weather.view.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment2_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/todaysWeather"
         android:name="com.example.weather.view.todaysWeather.TodaysWeather"

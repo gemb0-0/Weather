@@ -6,7 +6,7 @@
             android:title="" />
 
         <item
-            android:id="@+id/todaysWeather"
+            android:id="@+id/alertFragment"
             android:icon="@drawable/baseline_notifications_24"
             android:title="" />
 

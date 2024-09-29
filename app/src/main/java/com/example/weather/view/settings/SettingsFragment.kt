@@ -11,9 +11,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import com.example.weather.R
 import com.example.weather.databinding.FragmentSettingsBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
+import com.google.android.gms.maps.MapFragment
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -45,6 +50,12 @@ lateinit var sharedpref: SharedPreferences
         showSettings()
         binding.buttonUpdateSettings.setOnClickListener {
             viewModel.updateSettings(updateSettings())
+         if (binding.radioButtonMap.isChecked) {
+                val bundle = Bundle()
+                bundle.putString("location", "gps")
+                view.findNavController().navigate(R.id.mapsFragment, bundle)
+
+            }
 
         }
     }

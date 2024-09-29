@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMapsBinding
 import com.example.weather.model.Repository
@@ -49,60 +47,84 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
         val searchForPlace = binding.searchView
 
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
+        var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
 
+        viewModel = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)).get(MapsViewModel::class.java)
         searchByName(searchForPlace)
-        binding.floatingActionButton.setOnClickListener {
-            if (favLocation == null) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.please_select_a_location), Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
-                viewModel = ViewModelProvider(
-                    this,
-                    MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)
-                ).get(MapsViewModel::class.java)
-                viewModel.saveLocation(favLocation!!)
 
-                parentFragmentManager.popBackStack()
 
-                Log.i("MapsFragment", "onViewCreated: $favLocation")
+        arguments?.let { bundle ->
+            val sender = bundle.getString("location")
+            if(sender == "gps"){
+                binding.floatingActionButton.setOnClickListener {
+                    if (favLocation == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.please_select_a_location), Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        val mainLocation = requireActivity().getSharedPreferences("mainLocation", MODE_PRIVATE)
+                       val  viewModel2 = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref,mainLocation))[MapsViewModel::class.java]
+                        viewModel2.saveMainLocation(favLocation!!)
+                        parentFragmentManager.popBackStack()
+
+                    }
+                }
+            }
+        }?: run {
+            binding.floatingActionButton.setOnClickListener {
+                if (favLocation == null) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_select_a_location), Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    viewModel.saveLocation(favLocation!!)
+                    parentFragmentManager.popBackStack()
+
+                }
             }
         }
+
     }
 
     val callback = OnMapReadyCallback { map ->
         googleMap = map
+        initalizeMap(map)
+
+        googleMap?.setOnMapClickListener { latLng ->
+            handleMap(latLng)
+
+        }
+    }
+
+    private fun initalizeMap(map: GoogleMap) {
         val location = LatLng(30.06263, 31.24967)
         // googleMap?.uiSettings?.isZoomControlsEnabled = false //might cause a problem
         map.uiSettings.isZoomGesturesEnabled = true
         googleMap?.moveCamera(CameraUpdateFactory.newLatLng(location))
         googleMap?.animateCamera(CameraUpdateFactory.zoomTo(8f), 2000, null)
+    }
 
-        googleMap?.setOnMapClickListener { latLng ->
-            googleMap?.clear()
-            var address: MutableList<Address>? =
-                Geocoder(requireContext()).getFromLocation(latLng.latitude, latLng.longitude, 1)
-            googleMap?.addMarker(
-                MarkerOptions().position(latLng).draggable(true).title(
-                    address?.get(0)?.getAddressLine(0)
+    private fun handleMap(latLng: LatLng) {
+        googleMap?.clear()
+        var address: MutableList<Address>? =
+            Geocoder(requireContext()).getFromLocation(latLng.latitude, latLng.longitude, 1)
+        googleMap?.addMarker(
+            MarkerOptions().position(latLng).draggable(true).title(
+                address?.get(0)?.getAddressLine(0)
 
-                        ?: getString(R.string.unknown_location)
-                )
-            )?.showInfoWindow()
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-            googleMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
-            Log.i("MapsFragment", "onMapClick: $address")
-            Log.i("MapsFragment", "onMapClick:10 ${address?.get(0)?.subAdminArea}")
-            Log.i("MapsFragment", "onMapClick:0 ${address?.get(0)?.countryName}")
-            favLocation = Pair(
-                address?.get(0)?.countryName + "," + (address?.get(0)?.subAdminArea
-                    ?: "Unknown location"), latLng
+                    ?: getString(R.string.unknown_location)
             )
-
-        }
+        )?.showInfoWindow()
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
+        favLocation = Pair(
+            address?.get(0)?.countryName + "," + (address?.get(0)?.subAdminArea
+                ?: "Unknown location"), latLng
+        )
     }
 
     private fun searchByName(searchForPlace: SearchView) {
@@ -153,8 +175,6 @@ class MapsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        // Set the result to pass back to Fragment A
         val result = Bundle().apply {
             putString("bundleKey", "someValue")
         }

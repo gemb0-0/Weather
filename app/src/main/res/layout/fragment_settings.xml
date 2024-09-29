@@ -297,9 +297,9 @@
                 android:layout_height="wrap_content"
                 android:hapticFeedbackEnabled="true"
                 android:layout_gravity="center"
-                android:elevation="7dp"
+                android:elevation="10dp"
                 android:textColor="@android:color/black"
-                app:backgroundTint="@color/secondary"
+                android:backgroundTint="@color/secondary"
                 android:text="@string/updatesettings" />
 
             <Space
