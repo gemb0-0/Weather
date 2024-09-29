@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMapsBinding
 import com.example.weather.model.Repository
+import com.example.weather.model.localDataSource.Sharedpref
+import com.example.weather.model.remoteDataSource.RemoteDataSource
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -51,7 +53,10 @@ class MapsFragment : Fragment() {
 
         var sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
 
-        viewModel = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref)).get(MapsViewModel::class.java)
+        viewModel = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(
+            RemoteDataSource.getInstance(),
+            Sharedpref()
+        ), sharedpref)).get(MapsViewModel::class.java)
         searchByName(searchForPlace)
 
 
@@ -65,9 +70,8 @@ class MapsFragment : Fragment() {
                             getString(R.string.please_select_a_location), Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        val mainLocation = requireActivity().getSharedPreferences("mainLocation", MODE_PRIVATE)
-                       val  viewModel2 = ViewModelProvider(this, MapsViewModel.MapsViewModelFactory(Repository(), sharedpref,mainLocation))[MapsViewModel::class.java]
-                        viewModel2.saveMainLocation(favLocation!!)
+                        val mainLocation = requireActivity().getSharedPreferences("settings", MODE_PRIVATE)
+                        viewModel.saveMainLocation(favLocation!!, mainLocation)
                         parentFragmentManager.popBackStack()
 
                     }
@@ -130,7 +134,6 @@ class MapsFragment : Fragment() {
     private fun searchByName(searchForPlace: SearchView) {
         searchForPlace.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-
                 if (query != null && googleMap != null) {
                     googleMap?.clear()
                     val geocoder = Geocoder(requireContext())

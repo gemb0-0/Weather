@@ -3,7 +3,6 @@ package com.example.weather.model.localDataSource
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.weather.model.SharedConnctionStateViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -25,8 +24,9 @@ class Sharedpref : ISharedpref {
         editor.putString("wind", updatedSettings["wind"])
         editor.putString("location", updatedSettings["location"])
         editor.putString("notification", updatedSettings["notification"])
+        editor.putString("mainLocation", updatedSettings["mainLocation"])
         editor.apply()
-
+        Log.i("SharedPref", "updateSettings: $updatedSettings")
     }
 
     override fun getSettings(sharedpref: SharedPreferences): Flow<MutableList<String?>> {
@@ -35,7 +35,9 @@ class Sharedpref : ISharedpref {
         val wind = sharedpref.getString("wind", "km/h")
         val location = sharedpref.getString("location", "gps")
         val notification = sharedpref.getString("notification", "enable")
-        val settings = mutableListOf(language, temp, wind, location, notification)
+        val mainLoc = sharedpref.getString("mainLocation", null)
+        val settings = mutableListOf(language, temp, wind, location, notification, mainLoc)
+        Log.i("SharedPref", "getSettings: $settings")
         return flow {
             emit(settings)
         }
@@ -48,10 +50,7 @@ class Sharedpref : ISharedpref {
         Log.i("SharedPref", "saveWeatherResponse: $data")
     }
 
-    override fun saveWeeklyResponse(
-        get: SharedPreferences,
-        data: MutableList<Triple<String, String, String>>
-    ) {
+    override fun saveWeeklyResponse(get: SharedPreferences, data: MutableList<Triple<String, String, String>>) {
         val editor = get.edit()
         editor.putString("weekly", Gson().toJson(data))
         editor.apply()
@@ -59,10 +58,7 @@ class Sharedpref : ISharedpref {
     }
 
 
-    override fun saveHourlyResponse(
-        get: SharedPreferences,
-        data: MutableList<Triple<String, String, String>>
-    ) {
+    override fun saveHourlyResponse(get: SharedPreferences, data: MutableList<Triple<String, String, String>>) {
         val editor = get.edit()
         editor.putString("hourly", Gson().toJson(data))
         editor.apply()
@@ -72,27 +68,24 @@ class Sharedpref : ISharedpref {
 
 
     fun loadWeatherResponse(get: SharedPreferences): MutableMap<String, String>? {
-        val json = get.getString("weather", null) // Retrieve the JSON string
+        val json = get.getString("weather", null)
         return json?.let {
-            // Convert the JSON string back to a MutableMap using Gson
             Gson().fromJson(it, object : TypeToken<MutableMap<String, String>>() {}.type)
         }
     }
 
 
     fun loadWeeklyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
-        val json = get.getString("weekly", null) // Retrieve the JSON string
+        val json = get.getString("weekly", null)
         return json?.let {
-            // Convert the JSON string back to a MutableList of Triples
             Gson().fromJson(it, object : TypeToken<List<Triple<String, String, String>>>() {}.type)
         }
     }
 
 
     fun loadHourlyResponse(get: SharedPreferences): List<Triple<String, String, String>>? {
-        val json = get.getString("hourly", null) // Retrieve the JSON string
+        val json = get.getString("hourly", null)
         return json?.let {
-            // Convert the JSON string back to a MutableList of Triples
             Gson().fromJson(it, object : TypeToken<List<Triple<String, String, String>>>() {}.type)
         }
     }
@@ -115,14 +108,15 @@ class Sharedpref : ISharedpref {
         val editor = sharedpref.edit()
         editor.putString("favourites", Gson().toJson(favourites))
         editor.apply()
-        sharedpref.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            Log.i("SharedPref", "saveLocation: $key")
-
-        })
+//        sharedpref.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+//            Log.i("SharedPref", "saveLocation: $key")
+//
+//        })
     }
 
     override fun getFavourites(sharedpref: SharedPreferences): Flow<MutableList<Pair<String, LatLng>>> {
         val favourites = decodeLocation(sharedpref)
+        Log.i("SharedPref", "getFavourites: $favourites")
         return flow {
             emit(favourites)
         }
@@ -138,6 +132,22 @@ class Sharedpref : ISharedpref {
         editor.apply()
     }
 
+    override fun saveMainLocation(newLocation: Pair<String, LatLng>, mainLoc: SharedPreferences) {
+        val editor = mainLoc.edit()
+        editor.putString("mainLocation", Gson().toJson(newLocation))
+        editor.apply()
+
+    }
+
+    override fun saveAlert(
+        sharedpref: SharedPreferences,
+        alertData: MutableMap<String, Pair<String, String>>
+    ) {
+        val editor = sharedpref.edit()
+        editor.putString("alert", Gson().toJson(alertData))
+        editor.apply()
+    }
+
 
     private fun decodeLocation(sharedpref: SharedPreferences): MutableList<Pair<String, LatLng>> {
     val json = sharedpref.getString("favourites", null)
@@ -145,4 +155,5 @@ class Sharedpref : ISharedpref {
         Gson().fromJson(it, object : TypeToken<MutableList<Pair<String, LatLng>>>() {}.type)
     } ?: mutableListOf()
 }
+
 }

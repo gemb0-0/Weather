@@ -20,7 +20,6 @@ class MainActivityViewModel(var _repo: IRepository, var sharedpref: SharedPrefer
             _repo.getSettings(sharedpref).collect{ it->
                 _Settings.value = it
             }
-
         }
 
     }

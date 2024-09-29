@@ -15,5 +15,7 @@ interface ISharedpref {
     fun saveLocation (myLatLng: Pair<String, LatLng>, sharedpref: SharedPreferences)
       fun getFavourites(sharedpref: SharedPreferences): Flow<MutableList<Pair<String, LatLng>>>
     fun deleteFavourite(city: LatLng, sharedpref: SharedPreferences)
+    fun saveMainLocation(favLocation: Pair<String, LatLng>, mainLoc: SharedPreferences)
+    abstract fun saveAlert(sharedpref: SharedPreferences, alertData: MutableMap<String, Pair<String, String>>)
 
 }

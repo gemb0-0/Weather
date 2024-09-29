@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather.R
 import com.example.weather.databinding.FragmentFavouritesBinding
 import com.example.weather.model.Repository
+import com.example.weather.model.localDataSource.Sharedpref
+import com.example.weather.model.remoteDataSource.RemoteDataSource
 import com.example.weather.view.map.MapsFragment
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
@@ -38,7 +40,10 @@ class FavouritesFragment : Fragment(), onFavClick {
         binding.recyclerView.adapter = adapter
 
         val sharedpref = requireActivity().getSharedPreferences("favourites", MODE_PRIVATE)
-        viewModel = FavouritesViewModel.FavouritesViewModelFactory(Repository(),sharedpref).create(FavouritesViewModel::class.java)
+        viewModel = FavouritesViewModel.FavouritesViewModelFactory(Repository(
+            RemoteDataSource.getInstance(),
+            Sharedpref()
+        ),sharedpref).create(FavouritesViewModel::class.java)
         viewModel.getFavourites()
         lifecycleScope.launch {
             viewModel.fav.collect {

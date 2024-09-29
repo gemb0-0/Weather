@@ -11,14 +11,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.databinding.FragmentSettingsBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
-import com.google.android.gms.maps.MapFragment
+import com.example.weather.model.localDataSource.Sharedpref
+import com.example.weather.model.remoteDataSource.RemoteDataSource
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -42,7 +41,10 @@ lateinit var sharedpref: SharedPreferences
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedpref = requireActivity().getSharedPreferences("settings", MODE_PRIVATE)
-        val repo: IRepository = Repository()
+        val repo: IRepository = Repository(
+            RemoteDataSource.getInstance(),
+            Sharedpref()
+        )
         val factory = SettingsViewModel.SettingsViewModelFactory(repo, sharedpref)
         viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
 

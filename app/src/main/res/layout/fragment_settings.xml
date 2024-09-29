@@ -190,8 +190,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/secondary"
-                app:cardCornerRadius="35dp">
+                app:cardCornerRadius="35dp"
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -243,8 +245,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="15dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/secondary"
-                app:cardCornerRadius="35dp">
+                app:cardCornerRadius="35dp"
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -290,6 +294,10 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="222dp" />
 
             <Button
                 android:id="@+id/button_update_settings"

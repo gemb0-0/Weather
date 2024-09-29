@@ -17,6 +17,8 @@ import com.example.weather.model.IRepository
 import com.example.weather.Utils.Utils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +50,7 @@ class TodaysWeatherViewModel(
     val weeklyWeather: StateFlow<ApiResponse<List<Triple<String, String, String>>>> = _weeklyWeather
 
     private val _Settings = MutableStateFlow<MutableList<String?>>(mutableListOf())
-
+    val Settings: StateFlow<MutableList<String?>> = _Settings
 
     fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>) {
         viewModelScope.launch {
@@ -65,13 +67,23 @@ class TodaysWeatherViewModel(
         }
     }
 
-    fun getLocalWeather(location: LatLng) {
+    fun getLocalWeather( location: LatLng) {
         getSettings()
+
+//        if (_Settings.value[3] == "map" && _Settings.value[5] != null) {
+//            val json = _Settings.value[5]
+//            val mainLocation = Gson().fromJson<Pair<String, LatLng>>(json, object : TypeToken<Pair<String, LatLng>>() {}.type)
+//            Log.i("MainLocationnn map", mainLocation.toString())
+//            if (mainLocation != null) {
+//            location = mainLocation.second
+//            }
+//        }
+
         viewModelScope.launch(Dispatchers.IO) {
+
             try {
                 _weather.value = ApiResponse.Loading
 
-                Log.i("Localeeeeeeeeee", Locale.getDefault().toString())
                 _repo.getWeather(
                     location.longitude.toString(),
                     location.latitude.toString(),
@@ -129,7 +141,7 @@ class TodaysWeatherViewModel(
             }
 
             try {
-                val res = _repo.getWeatherHourly(
+                _repo.getWeatherHourly(
                     location.longitude.toString(),
                     location.latitude.toString(),
                     BuildConfig.OPEN_WEATHER_API_KEY,
@@ -156,8 +168,11 @@ class TodaysWeatherViewModel(
 
     fun getSettings() {
         viewModelScope.launch {
-            _repo.getSettings(sharedpref.get("settings")!!).collect { it ->
+            _repo.getSettings(sharedpref["settings"]!!).collect { it ->
                 _Settings.value = it
+                Log.i("Settings", it.toString())
+
+
             }
         }
     }

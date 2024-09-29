@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -25,12 +24,11 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentTodaysWeatherBinding
 import com.example.weather.model.remoteDataSource.ApiResponse
 import com.example.weather.model.Repository
-import com.example.weather.model.IRepository
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.weather.model.localDataSource.Sharedpref
+import com.example.weather.model.remoteDataSource.RemoteDataSource
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class TodaysWeather : Fragment() {
     lateinit var binding: FragmentTodaysWeatherBinding
@@ -56,8 +54,11 @@ class TodaysWeather : Fragment() {
         binding.recylerview.layoutManager = myLayoutManager
         binding.recylerview2.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        val factory = TodaysWeatherViewModel.TodaysWeatherViewModelFactory(Repository(), sharedPrefObj())
-        viewModel = ViewModelProvider(this, factory).get(TodaysWeatherViewModel::class.java)
+        val factory = TodaysWeatherViewModel.TodaysWeatherViewModelFactory(Repository(
+            RemoteDataSource.getInstance(),
+            Sharedpref()
+        ), sharedPrefObj())
+        viewModel = ViewModelProvider(this, factory)[TodaysWeatherViewModel::class.java]
 
 
         arguments?.let { bundle ->
@@ -78,7 +79,6 @@ class TodaysWeather : Fragment() {
                 setTenDaysData()
 
             } else {
-
                 if (CheckLocationPermission()) {
                     if (checkLocationEnabled()) {
                         viewModel.getFreshLocation(getFusedLocationProviderClient(requireContext()))
@@ -95,10 +95,35 @@ class TodaysWeather : Fragment() {
                         enableLocation()
                     }
                 } else {
+//                    lifecycleScope.launch {
+//                        viewModel.Settings.collect {
+//                        if (it[3] == "map" && it[5] != null) {
+//                            val json = it[5]
+//                            val mainLocation = Gson().fromJson<Pair<String, LatLng>>(json, object : TypeToken<Pair<String, LatLng>>() {}.type)
+//                            Log.i("MainLocationnn map", mainLocation.toString())
+//                            if (mainLocation != null) {
+//                            viewModel.getLocalWeather(mainLocation.second)
+//                            setTodayWeather()
+//                            setHours()
+//                            setTenDaysData()
+//                            }
+//
+//                        }
+//                            else {
+//                                requestPermissions(
+//                                    arrayOf(
+//                                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+//                                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+//                                    ), 505
+//                                )
+//                            }
+//                        }
+//                    }
+//
+
+
                     requestPermissions(
-                        arrayOf(
-                            android.Manifest.permission.ACCESS_FINE_LOCATION,
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION
+                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
                         ), 505
                     )
                 }
@@ -221,20 +246,27 @@ class TodaysWeather : Fragment() {
     }
 
     fun setWeatherIcon( icon: String) {
-        when (icon) {
-           // "01d","01n" -> binding.weathericon.setImageResource(R.drawable.ic_01d)
-//            "01n" -> binding.weathericon.setImageResource(R.drawable.ic_01n)
-//            "02d" -> binding.weathericon.setImageResource(R.drawable.ic_02d)
-//            "02n" -> binding.weathericon.setImageResource(R.drawable.ic_02n)
-//            "03d","03" -> binding.weathericon.setImageResource(R.drawable.ic_03d)
-//            "04d","04n" -> binding.weathericon.setImageResource(R.drawable.ic_04d)
-//            "09d","09n" -> binding.weathericon.setImageResource(R.drawable.ic_09d)
-//            "10d" -> binding.weathericon.setImageResource(R.drawable.ic_10d)
-//            "10n" -> binding.weathericon.setImageResource(R.drawable.ic_10n)
-//            "11d","11n" -> binding.weathericon.setImageResource(R.drawable.ic_11d)
-//            "13d" , "13n"-> binding.weathericon.setImageResource(R.drawable.ic_13d)
-//            "50n","50d" -> binding.weathericon.setImageResource(R.drawable.ic_50n)
-        }
+         val iconMap = mapOf(
+            "01d" to R.drawable.ic_01d,
+            "01n" to R.drawable.ic_01n,
+            "02d" to R.drawable.ic_02d,
+            "02n" to R.drawable.ic_03d,
+            "03d" to R.drawable.ic_03d,
+            "03n" to R.drawable.ic_03d,
+            "04d" to R.drawable.ic_04d,
+            "04n" to R.drawable.ic_04d,
+            "09d" to R.drawable.ic_09d,
+            "10d" to R.drawable.ic_09d,
+            "09n" to R.drawable.ic_09n,
+            "10n" to R.drawable.ic_09n,
+            "11d" to R.drawable.ic_11d,
+            "11n" to R.drawable.ic_11d,
+            "13d" to R.drawable.ic_13d,
+            "13n" to R.drawable.ic_13d,
+            "50d" to R.drawable.ic_50d,
+            "50n" to R.drawable.ic_50d
+        )
+        binding.weathericon.setImageResource(iconMap[icon]!!)
 
     }
 

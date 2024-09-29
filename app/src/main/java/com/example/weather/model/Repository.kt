@@ -11,14 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class Repository : IRepository {
-    val remoteDataSource: IRemoteDataSource
-    val localDataSource: ISharedpref
-
-    init {
-        remoteDataSource = RemoteDataSource.getInstance()
-        localDataSource = Sharedpref()
-    }
+class Repository(val remoteDataSource: IRemoteDataSource,val localDataSource: ISharedpref) : IRepository {
 
 
     override suspend fun getWeatherHourly(
@@ -28,7 +21,7 @@ class Repository : IRepository {
         units: String,
         lang: String
     ): Flow<WeatherResponse> {
-           // val response = remoteDataSource.getWeatherHourly(lon, lat, appid, units, lang)
+        // val response = remoteDataSource.getWeatherHourly(lon, lat, appid, units, lang)
         return flow {
             val response = remoteDataSource.getWeatherHourly(lon, lat, appid, units, lang)
             emit(response)
@@ -73,7 +66,7 @@ class Repository : IRepository {
     }
 
     override fun getSettings(sharedpref: SharedPreferences): Flow<MutableList<String?>> {
-       return localDataSource.getSettings(sharedpref)
+        return localDataSource.getSettings(sharedpref)
     }
 
     override fun saveWeatherResponse(get: SharedPreferences, data: MutableMap<String, String>) {
@@ -94,7 +87,7 @@ class Repository : IRepository {
     override fun getFromSharedPref(sharedPrefObj: MutableMap<String, SharedPreferences>)    : Flow<Triple<MutableMap<String, String>, List<Triple<String, String, String>>, List<Triple<String, String, String>>>>
     {
 
-          return localDataSource.getFromSharedPref(sharedPrefObj)
+        return localDataSource.getFromSharedPref(sharedPrefObj)
 
     }
 
@@ -110,5 +103,27 @@ class Repository : IRepository {
         localDataSource.deleteFavourite(city, sharedpref)
     }
 
+    override fun saveMainLocation(favLocation: Pair<String, LatLng>, mainLoc: SharedPreferences) {
+        localDataSource.saveMainLocation(favLocation, mainLoc)
+    }
+
+    override fun saveAlert(
+        sharedpref: SharedPreferences,
+        alertData: MutableMap<String, Pair<String, String>>
+    ) {
+        localDataSource.saveAlert(sharedpref, alertData)
+    }
+
+    override fun getAlarmByDateTime(date: String, time: String) {
+
+    }
+
+    override fun deleteAlarm(alarmEntity: Unit) {
+
+    }
+
+    override fun deleteAlertById(id: String) {
+
+    }
 
 }

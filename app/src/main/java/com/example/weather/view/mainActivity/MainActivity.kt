@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -23,7 +22,8 @@ import com.example.weather.Utils.NetworkChangeReceiver
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.model.IRepository
 import com.example.weather.model.Repository
-import com.example.weather.view.favourites.FavouritesFragment
+import com.example.weather.model.localDataSource.Sharedpref
+import com.example.weather.model.remoteDataSource.RemoteDataSource
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -69,7 +69,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         val sharedpref: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
-        val repo: IRepository = Repository()
+        val repo: IRepository = Repository(
+            RemoteDataSource.getInstance(),
+            Sharedpref()
+        )
         val factory = MainActivityViewModel.MainActivityViewModelFactory(
             repo, sharedpref
         )

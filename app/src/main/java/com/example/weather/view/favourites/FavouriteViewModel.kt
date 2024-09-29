@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather.model.IRepository
-import com.example.weather.model.SharedConnctionStateViewModel
 import com.example.weather.model.remoteDataSource.ApiResponse
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
