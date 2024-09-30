@@ -52,8 +52,8 @@ class OverlayManager(private val context: Context) {
 
 
         // Set the weather description
-        binding.title.text = description
-        binding.message.text = temp
+        binding.title.text = "Weather Alert!"
+        binding.message.text = "25°C"
 
         // Set up the layout parameters for the overlay
         val params = WindowManager.LayoutParams(

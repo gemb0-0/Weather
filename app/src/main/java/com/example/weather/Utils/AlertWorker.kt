@@ -30,7 +30,6 @@ class AlertWorker(appContext: Context, workerParams: WorkerParameters) : Corouti
             message = inputData.getString("message").toString()
             val type = inputData.getString("type").toString()
             sendNotification(message,type)
-          //  repository.deleteAlertById(id)
             Result.success()
         } catch (e: Exception) {
             Result.failure()
@@ -49,8 +48,8 @@ class AlertWorker(appContext: Context, workerParams: WorkerParameters) : Corouti
             if(type == "notification") {
                 val notification = NotificationCompat.Builder(context, channelId)
                     .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(message)
-                    .setSmallIcon(R.drawable.eye)
+                    .setContentText("weather alert")
+                    .setSmallIcon(R.drawable.ic_01d)
                     .setAutoCancel(true)
                     .setPriority(Notification.PRIORITY_MAX)
                     .build()

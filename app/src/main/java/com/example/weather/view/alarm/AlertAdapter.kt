@@ -1,4 +1,4 @@
-package com.example.weather.view.alert
+package com.example.weather.view.alarm
 
 import android.view.LayoutInflater
 import android.view.View

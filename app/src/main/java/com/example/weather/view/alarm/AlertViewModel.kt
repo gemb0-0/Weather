@@ -1,6 +1,5 @@
-package com.example.weather.view.alert
+package com.example.weather.view.alarm
 
-import WeatherResponse
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.location.Location
@@ -10,12 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.weather.BuildConfig
 import com.example.weather.model.IRepository
-import com.example.weather.model.remoteDataSource.ApiResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
