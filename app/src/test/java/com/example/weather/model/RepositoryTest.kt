@@ -3,6 +3,7 @@ package com.example.weather.model
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.weather.model.localDatasource.FakeSharedPref
 import com.example.weather.model.remoteDataSource.FakeRemoteDatasource
 import com.google.android.gms.maps.model.LatLng
@@ -12,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@RunWith(JUnit4::class)
+@RunWith(AndroidJUnit4::class)
 class RepositoryTest {
 
     private lateinit var repo: IRepository

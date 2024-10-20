@@ -13,7 +13,7 @@
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+../Shoparoo/local.properties
 
 you_file_path
 C:\Users\gemb0\AndroidStudioProjects\WeatherApp\gradle.properties
